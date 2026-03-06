@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   LayoutDashboard, Wallet, CalendarCheck, Sparkles, MoreHorizontal,
   CreditCard, Tag, Target, TrendingUp, Brain, FileText,
-  HeadphonesIcon, Settings, X, Users, Bell, ShieldCheck, ArrowLeftRight,
+  HeadphonesIcon, Settings, X, Users, Bell, ShieldCheck, ArrowLeftRight, Trophy,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
