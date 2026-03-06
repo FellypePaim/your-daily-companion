@@ -264,10 +264,10 @@ export default function Dashboard() {
         </Card>
       )}
 
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex items-center justify-between flex-wrap gap-2 md:gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Olá, {displayName}! 👋</h1>
-          <p className="text-muted-foreground text-sm mt-1">Aqui está seu resumo financeiro</p>
+          <h1 className="text-lg md:text-3xl font-bold text-foreground">Olá, {displayName}! 👋</h1>
+          <p className="text-muted-foreground text-xs md:text-sm mt-0.5 md:mt-1">Aqui está seu resumo financeiro</p>
         </div>
         <AddTransactionDialog />
       </div>
