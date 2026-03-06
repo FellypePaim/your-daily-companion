@@ -294,17 +294,17 @@ export default function Dashboard() {
       </Card>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
         {summaryCards.map((card) => (
           <Card key={card.label} className={`border-l-4 ${card.borderColor}`}>
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-xs text-muted-foreground">{card.label}</p>
-                <p className={`text-xl font-bold mt-1 ${card.valueColor}`}>{card.value}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">{card.subtitle}</p>
+            <CardContent className="p-2.5 md:p-4 flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-[10px] md:text-xs text-muted-foreground truncate">{card.label}</p>
+                <p className={`text-sm md:text-xl font-bold mt-0.5 md:mt-1 ${card.valueColor} truncate`}>{card.value}</p>
+                <p className="text-[9px] md:text-[11px] text-muted-foreground mt-0.5 hidden sm:block">{card.subtitle}</p>
               </div>
-              <div className={`h-10 w-10 rounded-full ${card.iconBg} ${card.iconColor} flex items-center justify-center shrink-0`}>
-                <card.icon className="h-5 w-5" />
+              <div className={`h-8 w-8 md:h-10 md:w-10 rounded-full ${card.iconBg} ${card.iconColor} flex items-center justify-center shrink-0`}>
+                <card.icon className="h-4 w-4 md:h-5 md:w-5" />
               </div>
             </CardContent>
           </Card>
