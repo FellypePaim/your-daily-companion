@@ -24,6 +24,7 @@ interface CallAIOptions {
  */
 async function callPollinationsRaw(opts: CallAIOptions): Promise<string> {
   const model = opts.model || "openai";
+  const apiKey = Deno.env.get("POLLINATIONS_API_KEY");
 
   const apiMessages: ChatMessage[] = [
     { role: "system", content: opts.systemPrompt },
@@ -34,9 +35,14 @@ async function callPollinationsRaw(opts: CallAIOptions): Promise<string> {
     apiMessages.push({ role, content: msg.content });
   }
 
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (apiKey) {
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  }
+
   const resp = await fetch(`${POLLINATIONS_BASE}/v1/chat/completions`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({
       model,
       messages: apiMessages,
