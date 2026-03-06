@@ -271,24 +271,3 @@ export function useGamification() {
   };
 }
 
-async function notifyWhatsApp(userId: string, type: "achievement" | "level_up", detail: string) {
-  try {
-    const { data: link } = await supabase
-      .from("whatsapp_links")
-      .select("phone_number")
-      .eq("user_id", userId)
-      .eq("verified", true)
-      .maybeSingle();
-
-    if (!link?.phone_number) return;
-
-    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-    if (!projectId) return;
-
-    await supabase.functions.invoke("gamification-notify", {
-      body: { phone: link.phone_number, type, detail },
-    });
-  } catch (e) {
-    console.error("WhatsApp gamification notify error:", e);
-  }
-}
