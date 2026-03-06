@@ -27,13 +27,15 @@ serve(async (req) => {
         apikey: EVOLUTION_KEY,
       },
       body: JSON.stringify({
-        url: webhookUrl,
-        webhook_by_events: false,
-        webhook_base64: true,
-        enabled: true,
-        events: [
-          "MESSAGES_UPSERT",
-        ],
+        webhook: {
+          url: webhookUrl,
+          webhook_by_events: false,
+          webhook_base64: true,
+          enabled: true,
+          events: [
+            "MESSAGES_UPSERT",
+          ],
+        },
       }),
     });
 
