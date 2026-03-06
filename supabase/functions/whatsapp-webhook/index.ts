@@ -3522,8 +3522,8 @@ Metas financeiras: ${goalsCtx}`;
       if (pending) {
         console.log(`Pending transaction found: ${pending.id}, effectiveText="${effectiveText}"`);
 
-        const confirmMatch = effectiveText.match(/^(sim|s|confirmar|ok|yes|confirm|✅ confirmar)$/i);
-        const cancelMatch  = effectiveText.match(/^(não|nao|n|cancelar|cancel|no|❌ cancelar)$/i);
+        const confirmMatch = effectiveText.match(/^(1|sim|s|confirmar|ok|yes|confirm|✅ confirmar|✅)$/i);
+        const cancelMatch  = effectiveText.match(/^(2|não|nao|n|cancelar|cancel|no|❌ cancelar|❌)$/i);
         const amountMatch  = effectiveText.match(/^(?:valor\s+)?r?\$?\s*(\d+(?:[.,]\d{1,2})?)$/i);
         const descMatch    = effectiveText.match(/^(?:desc(?:rição)?|descrição|nome|item)\s*[:\-]?\s*(.+)$/i);
         const typeMatch    = effectiveText.match(/^(receita|income|entrada|despesa|expense|gasto|saída|saida)$/i);

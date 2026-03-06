@@ -34,38 +34,10 @@ export async function sendWhatsAppButtons(
   buttons: { id: string; text: string }[],
   footer?: string
 ) {
-  const { url, key, instance } = getEvolutionConfig();
-
-  // Try Evolution API v2 native buttons
-  try {
-    const resp = await fetch(`${url}/message/sendButtons/${instance}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", apikey: key },
-      body: JSON.stringify({
-        number: phone,
-        title: "",
-        description: body,
-        footer: footer || "",
-        buttons: buttons.map(b => ({
-          type: "reply",
-          displayText: b.text,
-          id: b.id,
-        })),
-      }),
-    });
-
-    if (resp.ok) return await resp.json();
-
-    const errText = await resp.text();
-    console.warn("sendButtons failed, falling back to text:", resp.status, errText);
-  } catch (e) {
-    console.warn("sendButtons error, falling back to text:", e);
-  }
-
-  // Fallback to plain text with options listed
-  const fallback = body + (footer ? `\n\n${footer}` : "") +
-    `\n\n${buttons.map(b => b.text).join(" | ")}`;
-  return sendWhatsAppMessage(phone, fallback);
+  // Format as numbered options that work on ALL platforms (Web, Mobile, Desktop)
+  const optionsText = buttons.map((b, i) => `*${i + 1}.* ${b.text}`).join("\n");
+  const message = body + "\n\n" + optionsText + (footer ? `\n\n_${footer}_` : "");
+  return sendWhatsAppMessage(phone, message);
 }
 
 export function getBrazilNow(): Date {
