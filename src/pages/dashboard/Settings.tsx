@@ -96,6 +96,9 @@ export default function Settings() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { xp, level, levelTitle, streak, bestStreak, achievements, unlockedKeys } = useGamification();
+  const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
