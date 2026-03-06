@@ -4,15 +4,18 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import {
   X, ChevronLeft, ChevronRight, Plus, MessageSquare,
   TrendingDown, TrendingUp, Clock, DollarSign, FileText, Smile, Frown, Meh,
-  RefreshCw, Sparkles, Check, CalendarCheck, AlertTriangle, ArrowRight, CalendarDays
+  RefreshCw, Sparkles, Check, CalendarCheck, AlertTriangle, ArrowRight, CalendarDays,
+  Trophy, Star, Flame
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { AnimatePresence } from "framer-motion";
+import { useGamification } from "@/hooks/useGamification";
 
 type Period = "today" | "week" | "month";
 
