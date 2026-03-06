@@ -2375,9 +2375,9 @@ serve(async (req) => {
       }
       if (recurrence === "none") recurrence = parseRecurrence(reminderText);
 
-      // Clear any old reminder sessions
+      // Clear any old sessions for this phone
       await supabaseAdmin.from("whatsapp_sessions").delete()
-        .eq("phone_number", cleanPhone).like("step", "reminder_%");
+        .eq("phone_number", cleanPhone);
 
       if (!eventDate) {
         await supabaseAdmin.from("whatsapp_sessions").insert({
