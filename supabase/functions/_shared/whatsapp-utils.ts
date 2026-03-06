@@ -3,21 +3,27 @@ export const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-export async function sendWhatsAppMessage(phone: string, message: string) {
-  const UAZAPI_URL = Deno.env.get("UAZAPI_URL");
-  const UAZAPI_TOKEN = Deno.env.get("UAZAPI_TOKEN");
-  if (!UAZAPI_URL || !UAZAPI_TOKEN) throw new Error("UAZAPI credentials not configured");
+function getEvolutionConfig() {
+  const url = Deno.env.get("EVOLUTION_API_URL");
+  const key = Deno.env.get("EVOLUTION_API_KEY");
+  const instance = Deno.env.get("EVOLUTION_API_INSTANCE");
+  if (!url || !key || !instance) throw new Error("Evolution API credentials not configured");
+  return { url: url.replace(/\/$/, ""), key, instance };
+}
 
-  const resp = await fetch(`${UAZAPI_URL}/send/text`, {
+export async function sendWhatsAppMessage(phone: string, message: string) {
+  const { url, key, instance } = getEvolutionConfig();
+
+  const resp = await fetch(`${url}/message/sendText/${instance}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", token: UAZAPI_TOKEN },
+    headers: { "Content-Type": "application/json", apikey: key },
     body: JSON.stringify({ number: phone, text: message }),
   });
 
   if (!resp.ok) {
     const t = await resp.text();
-    console.error("UAZAPI send error:", resp.status, t);
-    throw new Error(`UAZAPI error: ${resp.status}`);
+    console.error("Evolution API send error:", resp.status, t);
+    throw new Error(`Evolution API error: ${resp.status}`);
   }
   return resp.json();
 }
@@ -28,30 +34,11 @@ export async function sendWhatsAppButtons(
   buttons: { id: string; text: string }[],
   footer?: string
 ) {
-  const UAZAPI_URL = Deno.env.get("UAZAPI_URL");
-  const UAZAPI_TOKEN = Deno.env.get("UAZAPI_TOKEN");
-  if (!UAZAPI_URL || !UAZAPI_TOKEN) throw new Error("UAZAPI credentials not configured");
-
-  const resp = await fetch(`${UAZAPI_URL}/send/menu`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", token: UAZAPI_TOKEN },
-    body: JSON.stringify({
-      number: phone,
-      type: "button",
-      text: body,
-      footerText: footer || "",
-      choices: buttons.map((b) => b.text),
-    }),
-  });
-
-  if (!resp.ok) {
-    const t = await resp.text();
-    console.warn("UAZAPI /send/menu error (falling back to text):", resp.status, t);
-    const fallback = body + (footer ? `\n\n${footer}` : "") +
-      `\n\n${buttons.map(b => b.text).join(" | ")}`;
-    return sendWhatsAppMessage(phone, fallback);
-  }
-  return resp.json();
+  // Evolution API doesn't have native button support like UAZAPI
+  // Fall back to text with options listed
+  const fallback = body + (footer ? `\n\n${footer}` : "") +
+    `\n\n${buttons.map(b => b.text).join(" | ")}`;
+  return sendWhatsAppMessage(phone, fallback);
 }
 
 export function getBrazilNow(): Date {
