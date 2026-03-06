@@ -373,8 +373,8 @@ export default function Dashboard() {
       {/* Gastos por Categoria + Metas */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-2 md:gap-4">
         <Card className="lg:col-span-3">
-          <CardContent className="p-5">
-            <h3 className="font-semibold text-foreground">Gastos por Categoria</h3>
+          <CardContent className="p-3 md:p-5">
+            <h3 className="font-semibold text-foreground text-sm md:text-base">Gastos por Categoria</h3>
             {catEntries.length === 0 ? (
               <div className="mt-8 flex flex-col items-center text-center pb-6">
                 <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
