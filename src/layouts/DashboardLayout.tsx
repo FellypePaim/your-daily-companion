@@ -10,8 +10,11 @@ import PlanExpiredModal from "@/components/PlanExpiredModal";
 import WhatsAppBanner from "@/components/WhatsAppBanner";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import TestPlanBanner from "@/components/TestPlanBanner";
+import { useGamification } from "@/hooks/useGamification";
 
 export default function DashboardLayout() {
+  // Initialize gamification hook at layout level so it runs on every dashboard page
+  useGamification();
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
 
   useEffect(() => {

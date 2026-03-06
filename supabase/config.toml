@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.setup-evolution-webhook]
 verify_jwt = false
+
+[functions.gamification-notify]
+verify_jwt = false

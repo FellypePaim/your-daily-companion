@@ -4,15 +4,18 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import {
   X, ChevronLeft, ChevronRight, Plus, MessageSquare,
   TrendingDown, TrendingUp, Clock, DollarSign, FileText, Smile, Frown, Meh,
-  RefreshCw, Sparkles, Check, CalendarCheck, AlertTriangle, ArrowRight, CalendarDays
+  RefreshCw, Sparkles, Check, CalendarCheck, AlertTriangle, ArrowRight, CalendarDays,
+  Trophy, Star, Flame
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { AnimatePresence } from "framer-motion";
+import { useGamification } from "@/hooks/useGamification";
 
 type Period = "today" | "week" | "month";
 
@@ -30,6 +33,12 @@ export default function Dashboard() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [period, setPeriod] = useState<Period>("month");
   const [showTour, setShowTour] = useState(false);
+  const { xp, level, levelTitle, streak, bestStreak } = useGamification();
+
+  const LEVEL_XP = [0, 100, 250, 500, 1000, 2000, 3500, 5500, 8000, 12000];
+  const currentLevelXp = LEVEL_XP[level - 1] || 0;
+  const nextLevelXp = LEVEL_XP[level] || LEVEL_XP[LEVEL_XP.length - 1] + 5000;
+  const levelProgress = Math.min(((xp - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100, 100);
 
   // Check if user needs onboarding
   const { data: profile } = useQuery({
@@ -302,7 +311,39 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Balance + Mood */}
+      {/* Gamification Widget */}
+      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-transparent cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/dashboard/gamification")}>
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Star className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-foreground">Nível {level}</span>
+                  <span className="text-xs text-primary font-medium">{levelTitle}</span>
+                </div>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-xs text-muted-foreground">{xp} XP</span>
+                  <div className="flex items-center gap-1">
+                    <Flame className="h-3.5 w-3.5 text-orange-500" />
+                    <span className="text-xs font-semibold text-foreground">{streak}</span>
+                    <span className="text-[10px] text-muted-foreground">dias</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-24">
+                <Progress value={levelProgress} className="h-2" />
+              </div>
+              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2 border-l-4 border-emerald-500/30">
           <CardContent className="p-4 flex items-center gap-4">
