@@ -7,18 +7,19 @@ const corsHeaders = {
 };
 
 async function sendWhatsAppMessage(phone: string, message: string) {
-  const UAZAPI_URL = Deno.env.get("UAZAPI_URL");
-  const UAZAPI_TOKEN = Deno.env.get("UAZAPI_TOKEN");
-  if (!UAZAPI_URL || !UAZAPI_TOKEN) return;
+  const url = Deno.env.get("EVOLUTION_API_URL")?.replace(/\/$/, "");
+  const key = Deno.env.get("EVOLUTION_API_KEY");
+  const instance = Deno.env.get("EVOLUTION_API_INSTANCE");
+  if (!url || !key || !instance) return;
 
-  const resp = await fetch(`${UAZAPI_URL}/send/text`, {
+  const resp = await fetch(`${url}/message/sendText/${instance}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", token: UAZAPI_TOKEN },
+    headers: { "Content-Type": "application/json", apikey: key },
     body: JSON.stringify({ number: phone, text: message }),
   });
   if (!resp.ok) {
     const t = await resp.text();
-    console.error("UAZAPI send error:", resp.status, t);
+    console.error("Evolution API send error:", resp.status, t);
   }
 }
 
@@ -28,7 +29,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Authenticate caller
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -52,7 +52,6 @@ Deno.serve(async (req) => {
 
     const callerId = claimsData.claims.sub;
 
-    // Check admin role
     const { data: roleData } = await anonClient
       .from("user_roles")
       .select("role")
@@ -71,7 +70,6 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Get all non-admin user IDs
     const { data: adminRoles } = await adminClient
       .from("user_roles")
       .select("user_id")
@@ -97,7 +95,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Delete data from all tables for these users
     const tables = [
       "transactions",
       "reminders",
@@ -115,7 +112,6 @@ Deno.serve(async (req) => {
       if (error) errors.push(`${table}: ${error.message}`);
     }
 
-    // Reset profile fields (keep plan, whatsapp, name)
     for (const uid of userIds) {
       await adminClient.from("profiles").update({
         monthly_income: 0,
@@ -123,7 +119,6 @@ Deno.serve(async (req) => {
       }).eq("id", uid);
     }
 
-    // Send WhatsApp notification to all verified users
     const { data: waLinks } = await adminClient
       .from("whatsapp_links")
       .select("user_id, phone_number")

@@ -7,18 +7,19 @@ const corsHeaders = {
 };
 
 async function sendWhatsAppMessage(phone: string, message: string) {
-  const UAZAPI_URL = Deno.env.get("UAZAPI_URL");
-  const UAZAPI_TOKEN = Deno.env.get("UAZAPI_TOKEN");
-  if (!UAZAPI_URL || !UAZAPI_TOKEN) throw new Error("UAZAPI credentials not configured");
+  const url = Deno.env.get("EVOLUTION_API_URL")?.replace(/\/$/, "");
+  const key = Deno.env.get("EVOLUTION_API_KEY");
+  const instance = Deno.env.get("EVOLUTION_API_INSTANCE");
+  if (!url || !key || !instance) throw new Error("Evolution API credentials not configured");
 
-  const resp = await fetch(`${UAZAPI_URL}/send/text`, {
+  const resp = await fetch(`${url}/message/sendText/${instance}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", token: UAZAPI_TOKEN },
+    headers: { "Content-Type": "application/json", apikey: key },
     body: JSON.stringify({ number: phone, text: message }),
   });
   if (!resp.ok) {
     const t = await resp.text();
-    console.error("UAZAPI send error:", resp.status, t);
+    console.error("Evolution API send error:", resp.status, t);
   }
   return resp;
 }
@@ -29,30 +30,9 @@ async function sendWhatsAppButtons(
   buttons: { id: string; text: string }[],
   footer?: string
 ) {
-  const UAZAPI_URL = Deno.env.get("UAZAPI_URL");
-  const UAZAPI_TOKEN = Deno.env.get("UAZAPI_TOKEN");
-  if (!UAZAPI_URL || !UAZAPI_TOKEN) throw new Error("UAZAPI credentials not configured");
-
-  const resp = await fetch(`${UAZAPI_URL}/send/menu`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", token: UAZAPI_TOKEN },
-    body: JSON.stringify({
-      number: phone,
-      type: "button",
-      text: body,
-      footerText: footer || "",
-      choices: buttons.map((b) => b.text),
-    }),
-  });
-
-  if (!resp.ok) {
-    const t = await resp.text();
-    console.warn("UAZAPI /send/menu error (falling back to text):", resp.status, t);
-    const fallback = body + (footer ? `\n\n${footer}` : "") +
-      `\n\n${buttons.map(b => b.text).join(" | ")}`;
-    return sendWhatsAppMessage(phone, fallback);
-  }
-  return resp.json();
+  const fallback = body + (footer ? `\n\n${footer}` : "") +
+    `\n\n${buttons.map((b) => b.text).join(" | ")}`;
+  return sendWhatsAppMessage(phone, fallback);
 }
 
 // Parse date/time expressions in Brazilian Portuguese
@@ -272,5 +252,4 @@ serve(async (req) => {
   }
 });
 
-// Export helpers for use in whatsapp-webhook
 export { parseDateTimeBR, parseNotifyMinutes, parseRecurrence, sendWhatsAppMessage, sendWhatsAppButtons };

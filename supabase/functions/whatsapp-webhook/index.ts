@@ -7,7 +7,7 @@ import {
   parseDateTimeBR, nextWD, parseNotifyMinutes, parseRecurrence,
   recurrenceLabel,
 } from "../_shared/whatsapp-utils.ts";
-import { downloadMediaFromUazapi } from "../_shared/whatsapp-media.ts";
+import { downloadMediaFromEvolution as downloadMediaFromEvolution as downloadMediaFromEvolution as downloadMediaFromEvolution as downloadMediaFromUazapi } from "../_shared/whatsapp-media.ts";
 import {
   processWithNoxIA, processImageWithAI, processAudioWithAI,
   parseReminderWithAI,
@@ -48,19 +48,16 @@ serve(async (req) => {
     const chat = body.chat || {};
 
     const phone = chat.number || chat.phone || message.number || message.phone || message.from || message.sender || body.number || body.from;
-    const text = message.body || message.text || message.message || body.body || body.text;
-    const isFromMe = message.fromMe || body.fromMe || false;
-    // UAZAPI uses "messageid" (lowercase) in the webhook payload - confirmed from logs
+    const text = message.body || message.text || message.message || boEvolution API / legacy webhook may use "messageid" (lowercase) in the payload (lowercase) in the payload (lowercase) in the payload payload - confirmed from logs
     const messageId = message.messageid || message.id || message.messageId;
     const mediaType = message.mediaType || message.type;
 
     if (isFromMe) {
       return new Response(JSON.stringify({ ok: true, ignored: true }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+        headers: { ...corsHeaders, "Content-Type": "application/js });
     }
 
-    // Button click responses from UAZAPI may come with empty text but buttonOrListid set
+   lick responses from UAZAPI may come with empty text but buttonOrListid set
     const buttonId = message.buttonOrListid || message.selectedButtonId || message.buttonId || "";
     const isButtonResponse = !!(buttonId) || message.type === "buttonResponse" || message.type === "interactive";
 
@@ -1630,7 +1627,7 @@ serve(async (req) => {
         if (session.step === "reminder_action") {
           const chosen: any = ctx.chosen_reminder;
 
-          // Match by buttonId OR button text (UAZAPI may send text instead of ID)
+          // Match by buttonId Outton text (UAZAPI may send text instead of ID)
           const isDeleteTrigger = /^(DELETE_REMINDER|cancelar.?lembrete|remover.?lembrete|deletar|🗑️|cancelar lembrete)/i.test(effectiveText);
           if (isDeleteTrigger) {
             await sendWhatsAppButtons(

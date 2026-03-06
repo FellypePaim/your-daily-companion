@@ -7,18 +7,19 @@ const corsHeaders = {
 };
 
 async function sendWhatsAppMessage(phone: string, message: string) {
-  const UAZAPI_URL = Deno.env.get("UAZAPI_URL");
-  const UAZAPI_TOKEN = Deno.env.get("UAZAPI_TOKEN");
-  if (!UAZAPI_URL || !UAZAPI_TOKEN) throw new Error("UAZAPI credentials not configured");
+  const url = Deno.env.get("EVOLUTION_API_URL")?.replace(/\/$/, "");
+  const key = Deno.env.get("EVOLUTION_API_KEY");
+  const instance = Deno.env.get("EVOLUTION_API_INSTANCE");
+  if (!url || !key || !instance) throw new Error("Evolution API credentials not configured");
 
-  const resp = await fetch(`${UAZAPI_URL}/send/text`, {
+  const resp = await fetch(`${url}/message/sendText/${instance}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", token: UAZAPI_TOKEN },
+    headers: { "Content-Type": "application/json", apikey: key },
     body: JSON.stringify({ number: phone, text: message }),
   });
   if (!resp.ok) {
     const t = await resp.text();
-    console.error("UAZAPI send error:", resp.status, t);
+    console.error("Evolution API send error:", resp.status, t);
   }
   return resp;
 }
@@ -43,8 +44,8 @@ const PLAN_BENEFITS: Record<string, string[]> = {
 };
 
 const PLAN_NAMES: Record<string, string> = {
-  mensal: "Nox Mensal (R$ 19,90/mês)",
-  anual: "Nox Anual (12x R$ 14,90/mês)",
+  mensal: "Brave Mensal (R$ 19,90/mês)",
+  anual: "Brave Anual (12x R$ 14,90/mês)",
   free: "Gratuito",
 };
 
@@ -116,8 +117,8 @@ serve(async (req) => {
       `Olá, ${name}! Seu plano foi alterado com sucesso.\n\n` +
       `📋 *Novo plano:* ${PLAN_NAMES[newPlan] || newPlan}\n\n` +
       `*Seus benefícios agora:*\n${benefitsText}\n\n` +
-      `💪 Continue gerenciando suas finanças com o Nox IA!\n\n` +
-      `_Nox IA - Seu assessor financeiro 🤖_`;
+      `💪 Continue gerenciando suas finanças com o Brave IA!\n\n` +
+      `_Brave IA - Seu assessor financeiro 🤖_`;
 
     await sendWhatsAppMessage(waLink.phone_number, message);
     console.log(`Plan change notification sent to ${waLink.phone_number}: ${oldPlan} -> ${newPlan}`);
