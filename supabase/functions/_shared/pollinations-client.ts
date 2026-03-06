@@ -24,6 +24,7 @@ interface CallAIOptions {
  */
 async function callPollinationsRaw(opts: CallAIOptions): Promise<string> {
   const model = opts.model || "openai";
+  const apiKey = Deno.env.get("POLLINATIONS_API_KEY");
 
   const apiMessages: ChatMessage[] = [
     { role: "system", content: opts.systemPrompt },
@@ -34,9 +35,14 @@ async function callPollinationsRaw(opts: CallAIOptions): Promise<string> {
     apiMessages.push({ role, content: msg.content });
   }
 
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (apiKey) {
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  }
+
   const resp = await fetch(`${POLLINATIONS_BASE}/v1/chat/completions`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({
       model,
       messages: apiMessages,
@@ -147,12 +153,19 @@ async function transcribeAudioPollinations(audioBase64: string, mimeType: string
   const ext = mimeType.includes("ogg") ? "ogg" : mimeType.includes("mp4") ? "m4a" : "mp3";
   const blob = new Blob([bytes], { type: mimeType });
 
+  const apiKey = Deno.env.get("POLLINATIONS_API_KEY");
   const formData = new FormData();
   formData.append("file", blob, `audio.${ext}`);
   formData.append("model", "openai");
 
+  const headers: Record<string, string> = {};
+  if (apiKey) {
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  }
+
   const resp = await fetch(`${POLLINATIONS_BASE}/v1/audio/transcriptions`, {
     method: "POST",
+    headers,
     body: formData,
   });
 
