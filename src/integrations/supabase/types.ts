@@ -80,6 +80,30 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       family_groups: {
         Row: {
           created_at: string | null
@@ -527,11 +551,110 @@ export type Database = {
         }
         Relationships: []
       }
+      whatsapp_pending_transactions: {
+        Row: {
+          amount: number
+          category_id: string | null
+          category_name: string | null
+          created_at: string
+          description: string
+          expires_at: string
+          id: string
+          payment_method: string | null
+          phone_number: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category_id?: string | null
+          category_name?: string | null
+          created_at?: string
+          description: string
+          expires_at?: string
+          id?: string
+          payment_method?: string | null
+          phone_number: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category_id?: string | null
+          category_name?: string | null
+          created_at?: string
+          description?: string
+          expires_at?: string
+          id?: string
+          payment_method?: string | null
+          phone_number?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      whatsapp_rate_limits: {
+        Row: {
+          message_count: number
+          phone_number: string
+          window_start: string
+        }
+        Insert: {
+          message_count?: number
+          phone_number: string
+          window_start?: string
+        }
+        Update: {
+          message_count?: number
+          phone_number?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
+      whatsapp_sessions: {
+        Row: {
+          context: Json
+          created_at: string
+          expires_at: string
+          id: string
+          phone_number: string
+          step: string
+        }
+        Insert: {
+          context?: Json
+          created_at?: string
+          expires_at?: string
+          id?: string
+          phone_number: string
+          step: string
+        }
+        Update: {
+          context?: Json
+          created_at?: string
+          expires_at?: string
+          id?: string
+          phone_number?: string
+          step?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      can_access_family_resource: {
+        Args: { _requesting_user_id: string; _resource_user_id: string }
+        Returns: boolean
+      }
+      check_whatsapp_rate_limit: {
+        Args: {
+          _max_messages?: number
+          _phone: string
+          _window_minutes?: number
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -539,9 +662,18 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_family_member: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_family_owner: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "user"
+      subscription_plan: "free" | "mensal" | "trimestral" | "anual" | "teste"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -670,6 +802,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      subscription_plan: ["free", "mensal", "trimestral", "anual", "teste"],
     },
   },
 } as const
