@@ -14,16 +14,534 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cards: {
+        Row: {
+          brand: string | null
+          color: string | null
+          created_at: string | null
+          credit_limit: number | null
+          due_day: number | null
+          id: string
+          last_4_digits: string | null
+          name: string
+          user_id: string
+        }
+        Insert: {
+          brand?: string | null
+          color?: string | null
+          created_at?: string | null
+          credit_limit?: number | null
+          due_day?: number | null
+          id?: string
+          last_4_digits?: string | null
+          name: string
+          user_id: string
+        }
+        Update: {
+          brand?: string | null
+          color?: string | null
+          created_at?: string | null
+          credit_limit?: number | null
+          due_day?: number | null
+          id?: string
+          last_4_digits?: string | null
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          budget_limit: number | null
+          color: string | null
+          created_at: string | null
+          icon: string | null
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          budget_limit?: number | null
+          color?: string | null
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          budget_limit?: number | null
+          color?: string | null
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      family_groups: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          owner_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
+      family_memberships: {
+        Row: {
+          created_at: string | null
+          family_group_id: string
+          id: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          family_group_id: string
+          id?: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          family_group_id?: string
+          id?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_memberships_family_group_id_fkey"
+            columns: ["family_group_id"]
+            isOneToOne: false
+            referencedRelation: "family_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_goals: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          current_amount: number | null
+          deadline: string | null
+          id: string
+          name: string
+          target_amount: number | null
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          current_amount?: number | null
+          deadline?: string | null
+          id?: string
+          name: string
+          target_amount?: number | null
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          current_amount?: number | null
+          deadline?: string | null
+          id?: string
+          name?: string
+          target_amount?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          display_name: string | null
+          has_completed_onboarding: boolean | null
+          id: string
+          monthly_income: number | null
+          notify_email_updates: boolean | null
+          notify_monthly_report: boolean | null
+          notify_morning: boolean | null
+          notify_night: boolean | null
+          subscription_expires_at: string | null
+          subscription_plan: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          has_completed_onboarding?: boolean | null
+          id: string
+          monthly_income?: number | null
+          notify_email_updates?: boolean | null
+          notify_monthly_report?: boolean | null
+          notify_morning?: boolean | null
+          notify_night?: boolean | null
+          subscription_expires_at?: string | null
+          subscription_plan?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          has_completed_onboarding?: boolean | null
+          id?: string
+          monthly_income?: number | null
+          notify_email_updates?: boolean | null
+          notify_monthly_report?: boolean | null
+          notify_morning?: boolean | null
+          notify_night?: boolean | null
+          subscription_expires_at?: string | null
+          subscription_plan?: string | null
+        }
+        Relationships: []
+      }
+      recurring_transactions: {
+        Row: {
+          amount: number | null
+          category_id: string | null
+          created_at: string | null
+          day_of_month: number | null
+          description: string | null
+          expense_type: string | null
+          id: string
+          is_active: boolean | null
+          type: string | null
+          user_id: string
+          wallet_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          category_id?: string | null
+          created_at?: string | null
+          day_of_month?: number | null
+          description?: string | null
+          expense_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          type?: string | null
+          user_id: string
+          wallet_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          category_id?: string | null
+          created_at?: string | null
+          day_of_month?: number | null
+          description?: string | null
+          expense_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          type?: string | null
+          user_id?: string
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recurring_transactions_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recurring_transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reminders: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          event_at: string
+          id: string
+          is_active: boolean | null
+          is_sent: boolean | null
+          notify_minutes_before: number | null
+          recurrence: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          event_at: string
+          id?: string
+          is_active?: boolean | null
+          is_sent?: boolean | null
+          notify_minutes_before?: number | null
+          recurrence?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          event_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_sent?: boolean | null
+          notify_minutes_before?: number | null
+          recurrence?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      support_conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          status: string | null
+          subject: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          subject?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          subject?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      support_messages: {
+        Row: {
+          content: string | null
+          conversation_id: string
+          created_at: string | null
+          id: string
+          image_url: string | null
+          sender_id: string
+        }
+        Insert: {
+          content?: string | null
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          sender_id: string
+        }
+        Update: {
+          content?: string | null
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "support_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          amount: number | null
+          card_id: string | null
+          category_id: string | null
+          created_at: string | null
+          date: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          is_paid: boolean | null
+          recurring_id: string | null
+          type: string | null
+          user_id: string
+          wallet_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          card_id?: string | null
+          category_id?: string | null
+          created_at?: string | null
+          date?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_paid?: boolean | null
+          recurring_id?: string | null
+          type?: string | null
+          user_id: string
+          wallet_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          card_id?: string | null
+          category_id?: string | null
+          created_at?: string | null
+          date?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          is_paid?: boolean | null
+          recurring_id?: string | null
+          type?: string | null
+          user_id?: string
+          wallet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_recurring_id_fkey"
+            columns: ["recurring_id"]
+            isOneToOne: false
+            referencedRelation: "recurring_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallets: {
+        Row: {
+          balance: number | null
+          color: string | null
+          created_at: string | null
+          icon: string | null
+          id: string
+          name: string
+          type: string | null
+          user_id: string
+        }
+        Insert: {
+          balance?: number | null
+          color?: string | null
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          type?: string | null
+          user_id: string
+        }
+        Update: {
+          balance?: number | null
+          color?: string | null
+          created_at?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      whatsapp_links: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          phone_number: string | null
+          user_id: string
+          verification_code: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          phone_number?: string | null
+          user_id: string
+          verification_code?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          phone_number?: string | null
+          user_id?: string
+          verification_code?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +668,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
