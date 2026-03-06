@@ -274,7 +274,7 @@ export default function Dashboard() {
 
       {/* Period Selector */}
       <Card>
-        <CardContent className="p-4">
+        <CardContent className="p-3 md:p-4">
           <div className="flex items-center justify-between">
             <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10"><ChevronLeft className="h-5 w-5" /></Button>
             <div className="text-center">
