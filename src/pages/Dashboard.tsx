@@ -371,7 +371,7 @@ export default function Dashboard() {
       </div>
 
       {/* Gastos por Categoria + Metas */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-2 md:gap-4">
         <Card className="lg:col-span-3">
           <CardContent className="p-5">
             <h3 className="font-semibold text-foreground">Gastos por Categoria</h3>
