@@ -311,7 +311,39 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Balance + Mood */}
+      {/* Gamification Widget */}
+      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-transparent cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/dashboard/gamification")}>
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Star className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-foreground">Nível {level}</span>
+                  <span className="text-xs text-primary font-medium">{levelTitle}</span>
+                </div>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-xs text-muted-foreground">{xp} XP</span>
+                  <div className="flex items-center gap-1">
+                    <Flame className="h-3.5 w-3.5 text-orange-500" />
+                    <span className="text-xs font-semibold text-foreground">{streak}</span>
+                    <span className="text-[10px] text-muted-foreground">dias</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-24">
+                <Progress value={levelProgress} className="h-2" />
+              </div>
+              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2 border-l-4 border-emerald-500/30">
           <CardContent className="p-4 flex items-center gap-4">
