@@ -89,7 +89,6 @@ export function useGamification() {
 
     if (newLevel > oldLevel) {
       setPendingLevelUp({ level: newLevel, title: levelTitles[newLevel - 1] });
-      notifyWhatsApp(user.id, `level_up`, `Nível ${newLevel}: ${levelTitles[newLevel - 1]}`);
     }
   }, [user, gamification, queryClient]);
 
