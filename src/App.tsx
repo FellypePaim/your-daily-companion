@@ -32,6 +32,7 @@ import Reminders from "./pages/dashboard/Reminders";
 import Gamification from "./pages/dashboard/Gamification";
 import NotFound from "./pages/NotFound";
 import Install from "./pages/Install";
+import DesignPreview from "./pages/DesignPreview";
 import { PWASplashScreen } from "./components/PWASplashScreen";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<IndexRoute />} />
+            <Route path="/design-preview" element={<DesignPreview />} />
             <Route path="/install" element={<Install />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
