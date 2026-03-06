@@ -227,7 +227,7 @@ export default function Dashboard() {
     <AnimatePresence>
       {showTour && <OnboardingTour onComplete={handleTourComplete} />}
     </AnimatePresence>
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-3 md:space-y-6">
       {showWelcome && !whatsappLink && (
         <Card className="border-emerald-200 bg-emerald-50/80 dark:bg-emerald-950/20 dark:border-emerald-800/40 relative overflow-hidden">
           <button onClick={() => setShowWelcome(false)} className="absolute top-3 right-3 text-muted-foreground hover:text-foreground">
