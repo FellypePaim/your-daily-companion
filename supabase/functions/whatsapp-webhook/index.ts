@@ -25,34 +25,36 @@ serve(async (req) => {
   try {
     const body = await req.json();
 
-    // Detailed log for debugging media messages
-    // Log full content field for media diagnosis
-    if (body.message?.content) {
-      console.log("Message content field:", JSON.stringify(body.message.content).substring(0, 500));
-    }
+    // Evolution API v2 wraps payload in { event, instance, data: { key, message, ... } }
+    const isEvolutionV2 = !!(body.data && body.event);
+    const payload = isEvolutionV2 ? body.data : body;
 
-    console.log("Webhook payload:", JSON.stringify({
-      EventType: body.EventType,
-      chatPhone: body.chat?.phone,
-      msgFromMe: body.message?.fromMe,
-      msgType: body.message?.type,
-      msgIsMedia: body.message?.isMedia,
-      msgMimetype: body.message?.mimetype,
-      msgId: body.message?.id,
-      msgBody: body.message?.body,
-      hasMediaUrl: !!(body.message?.mediaUrl || body.message?.media?.url),
-      allMsgKeys: body.message ? Object.keys(body.message) : [],
+    // Detailed log for debugging
+    console.log("Webhook payload (parsed):", JSON.stringify({
+      isEvolutionV2,
+      event: body.event,
+      instance: body.instance,
+      remoteJid: payload.key?.remoteJid,
+      fromMe: payload.key?.fromMe,
+      messageType: payload.messageType,
+      pushName: payload.pushName,
+      msgKeys: payload.message ? Object.keys(payload.message) : [],
+      conversation: payload.message?.conversation,
     }));
 
-    const message = body.message || {};
-    const chat = body.chat || {};
+    const message = payload.message || {};
+    const chat = payload.chat || {};
 
-    const phone = chat.number || chat.phone || message.number || message.phone || message.from || message.sender || body.number || body.from;
-    const text = message.body || message.text || message.message || body.text || "";
-    // Evolution API / legacy webhook may use "messageid" (lowercase)
-    const messageId = message.messageid || message.id || message.messageId;
-    const mediaType = message.mediaType || message.type;
-    const isFromMe = message.fromMe === true || body.data?.key?.fromMe === true;
+    // Evolution API v2: phone comes from key.remoteJid (format: 5511999999999@s.whatsapp.net)
+    const remoteJid = payload.key?.remoteJid || "";
+    const phoneFromJid = remoteJid.replace(/@.*$/, "");
+    const phone = phoneFromJid || chat.number || chat.phone || message.number || message.phone || message.from || message.sender || body.number || body.from;
+
+    // Evolution API v2: text is in message.conversation or message.extendedTextMessage.text
+    const text = message.conversation || message.extendedTextMessage?.text || message.body || message.text || body.text || "";
+    const messageId = payload.key?.id || message.messageid || message.id || message.messageId;
+    const mediaType = payload.messageType || message.mediaType || message.type;
+    const isFromMe = payload.key?.fromMe === true || message.fromMe === true;
 
     if (isFromMe) {
       return new Response(JSON.stringify({ ok: true, ignored: true }), {
