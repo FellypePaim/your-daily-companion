@@ -109,7 +109,7 @@ export function useGamification() {
       return;
     }
 
-    toast.success(`🏆 Conquista desbloqueada: ${achievement.name}!`, { duration: 5000 });
+    setPendingAchievement(achievement);
     queryClient.invalidateQueries({ queryKey: ["user-achievements"] });
 
     // Grant XP
