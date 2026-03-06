@@ -88,8 +88,7 @@ export function useGamification() {
     queryClient.invalidateQueries({ queryKey: ["user-gamification"] });
 
     if (newLevel > oldLevel) {
-      toast.success(`🎉 Subiu para Nível ${newLevel}: ${levelTitles[newLevel - 1]}!`, { duration: 5000 });
-      // Notify via WhatsApp
+      setPendingLevelUp({ level: newLevel, title: levelTitles[newLevel - 1] });
       notifyWhatsApp(user.id, `level_up`, `Nível ${newLevel}: ${levelTitles[newLevel - 1]}`);
     }
   }, [user, gamification, queryClient]);
