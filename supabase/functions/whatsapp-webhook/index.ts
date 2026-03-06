@@ -52,6 +52,7 @@ serve(async (req) => {
     // Evolution API / legacy webhook may use "messageid" (lowercase)
     const messageId = message.messageid || message.id || message.messageId;
     const mediaType = message.mediaType || message.type;
+    const isFromMe = message.fromMe === true || body.data?.key?.fromMe === true;
 
     if (isFromMe) {
       return new Response(JSON.stringify({ ok: true, ignored: true }), {
