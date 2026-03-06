@@ -61,6 +61,8 @@ export default function DashboardLayout() {
 
         {/* Plan expired modal — shown globally over all dashboard pages */}
         <PlanExpiredModal />
+        <AchievementPopup achievement={pendingAchievement} onClose={clearPendingAchievement} />
+        <LevelUpPopup level={pendingLevelUp?.level || null} title={pendingLevelUp?.title || ""} onClose={clearPendingLevelUp} />
       </div>
     </SidebarProvider>
   );
