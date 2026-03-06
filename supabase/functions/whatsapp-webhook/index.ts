@@ -3905,8 +3905,9 @@ Metas financeiras: ${goalsCtx}`;
         } else {
           const recurrence = action.recurrence || "none";
 
-          // Create session — go to reminder_notify step to ask notification time
-          await supabaseAdmin.from("whatsapp_sessions").upsert({
+          // Clear any old sessions for this phone, then create new one
+          await supabaseAdmin.from("whatsapp_sessions").delete().eq("phone_number", cleanPhone);
+          await supabaseAdmin.from("whatsapp_sessions").insert({
             phone_number: cleanPhone,
             step: "reminder_notify",
             context: {
@@ -3918,7 +3919,7 @@ Metas financeiras: ${goalsCtx}`;
               originalText: effectiveText,
             },
             expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-          }, { onConflict: "phone_number" });
+          });
 
           const fmtDate = (s: string) =>
             new Date(s).toLocaleString("pt-BR", {
