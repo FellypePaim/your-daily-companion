@@ -89,7 +89,6 @@ export function useGamification() {
 
     if (newLevel > oldLevel) {
       setPendingLevelUp({ level: newLevel, title: levelTitles[newLevel - 1] });
-      notifyWhatsApp(user.id, `level_up`, `Nível ${newLevel}: ${levelTitles[newLevel - 1]}`);
     }
   }, [user, gamification, queryClient]);
 
@@ -115,8 +114,6 @@ export function useGamification() {
     // Grant XP
     await grantXP(achievement.xp_reward);
 
-    // Notify via WhatsApp
-    notifyWhatsApp(user.id, "achievement", achievement.name);
   }, [user, unlockedKeys, achievements, grantXP, queryClient]);
 
   // Auto-check achievements
@@ -274,24 +271,3 @@ export function useGamification() {
   };
 }
 
-async function notifyWhatsApp(userId: string, type: "achievement" | "level_up", detail: string) {
-  try {
-    const { data: link } = await supabase
-      .from("whatsapp_links")
-      .select("phone_number")
-      .eq("user_id", userId)
-      .eq("verified", true)
-      .maybeSingle();
-
-    if (!link?.phone_number) return;
-
-    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-    if (!projectId) return;
-
-    await supabase.functions.invoke("gamification-notify", {
-      body: { phone: link.phone_number, type, detail },
-    });
-  } catch (e) {
-    console.error("WhatsApp gamification notify error:", e);
-  }
-}
