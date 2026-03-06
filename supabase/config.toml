@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.whatsapp-budget-alert]
 verify_jwt = false
+
+[functions.setup-evolution-webhook]
+verify_jwt = false
