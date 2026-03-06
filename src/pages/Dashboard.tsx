@@ -352,7 +352,7 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Balanço Previsto</p>
-              <p className={`text-xl font-bold ${balance >= 0 ? "text-emerald-500" : "text-destructive"}`}>{fmt(balance)}</p>
+              <p className={`text-lg md:text-xl font-bold ${balance >= 0 ? "text-emerald-500" : "text-destructive"}`}>{fmt(balance)}</p>
               <p className="text-[11px] text-muted-foreground">Receitas - Despesas do período</p>
             </div>
           </CardContent>
