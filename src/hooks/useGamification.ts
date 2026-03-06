@@ -267,6 +267,10 @@ export function useGamification() {
     levelTitle: levelTitles[getLevel(gamification?.xp || 0) - 1] || "Lenda",
     streak: gamification?.streak_current || 0,
     bestStreak: gamification?.streak_best || 0,
+    pendingAchievement,
+    clearPendingAchievement: () => setPendingAchievement(null),
+    pendingLevelUp,
+    clearPendingLevelUp: () => setPendingLevelUp(null),
   };
 }
 
