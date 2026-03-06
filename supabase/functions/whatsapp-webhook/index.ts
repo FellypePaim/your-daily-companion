@@ -66,7 +66,8 @@ serve(async (req) => {
     const buttonId = message.buttonOrListid || message.selectedButtonId || message.buttonId || "";
     const isButtonResponse = !!(buttonId) || message.type === "buttonResponse" || message.type === "interactive";
 
-    const isMedia = isMediaMessage(message);
+    const evMessageType = payload.messageType || "";
+    const isMedia = isMediaMessage(message, evMessageType);
     const hasText = !!(text && text.trim());
     const hasButtonResponse = !!(buttonId.trim());
 
