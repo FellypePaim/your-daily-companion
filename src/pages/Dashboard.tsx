@@ -227,13 +227,13 @@ export default function Dashboard() {
     <AnimatePresence>
       {showTour && <OnboardingTour onComplete={handleTourComplete} />}
     </AnimatePresence>
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-3 md:space-y-6">
       {showWelcome && !whatsappLink && (
         <Card className="border-emerald-200 bg-emerald-50/80 dark:bg-emerald-950/20 dark:border-emerald-800/40 relative overflow-hidden">
           <button onClick={() => setShowWelcome(false)} className="absolute top-3 right-3 text-muted-foreground hover:text-foreground">
             <X className="h-4 w-4" />
           </button>
-          <CardContent className="p-5">
+          <CardContent className="p-3 md:p-5">
             <div className="flex items-start gap-3">
               <span className="text-2xl">👋</span>
               <div>
@@ -264,17 +264,17 @@ export default function Dashboard() {
         </Card>
       )}
 
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex items-center justify-between flex-wrap gap-2 md:gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Olá, {displayName}! 👋</h1>
-          <p className="text-muted-foreground text-sm mt-1">Aqui está seu resumo financeiro</p>
+          <h1 className="text-lg md:text-3xl font-bold text-foreground">Olá, {displayName}! 👋</h1>
+          <p className="text-muted-foreground text-xs md:text-sm mt-0.5 md:mt-1">Aqui está seu resumo financeiro</p>
         </div>
         <AddTransactionDialog />
       </div>
 
       {/* Period Selector */}
       <Card>
-        <CardContent className="p-4">
+        <CardContent className="p-3 md:p-4">
           <div className="flex items-center justify-between">
             <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10"><ChevronLeft className="h-5 w-5" /></Button>
             <div className="text-center">
@@ -294,17 +294,17 @@ export default function Dashboard() {
       </Card>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
         {summaryCards.map((card) => (
           <Card key={card.label} className={`border-l-4 ${card.borderColor}`}>
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-xs text-muted-foreground">{card.label}</p>
-                <p className={`text-xl font-bold mt-1 ${card.valueColor}`}>{card.value}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">{card.subtitle}</p>
+            <CardContent className="p-2.5 md:p-4 flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-[10px] md:text-xs text-muted-foreground truncate">{card.label}</p>
+                <p className={`text-sm md:text-xl font-bold mt-0.5 md:mt-1 ${card.valueColor} truncate`}>{card.value}</p>
+                <p className="text-[9px] md:text-[11px] text-muted-foreground mt-0.5 hidden sm:block">{card.subtitle}</p>
               </div>
-              <div className={`h-10 w-10 rounded-full ${card.iconBg} ${card.iconColor} flex items-center justify-center shrink-0`}>
-                <card.icon className="h-5 w-5" />
+              <div className={`h-8 w-8 md:h-10 md:w-10 rounded-full ${card.iconBg} ${card.iconColor} flex items-center justify-center shrink-0`}>
+                <card.icon className="h-4 w-4 md:h-5 md:w-5" />
               </div>
             </CardContent>
           </Card>
@@ -313,11 +313,11 @@ export default function Dashboard() {
 
       {/* Gamification Widget */}
       <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-transparent cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/dashboard/gamification")}>
-        <CardContent className="p-4">
+        <CardContent className="p-3 md:p-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Star className="h-6 w-6 text-primary" />
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="h-9 w-9 md:h-11 md:w-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Star className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -344,21 +344,21 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 md:gap-4">
         <Card className="lg:col-span-2 border-l-4 border-emerald-500/30">
-          <CardContent className="p-4 flex items-center gap-4">
+          <CardContent className="p-3 md:p-4 flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
               <FileText className="h-5 w-5" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Balanço Previsto</p>
-              <p className={`text-xl font-bold ${balance >= 0 ? "text-emerald-500" : "text-destructive"}`}>{fmt(balance)}</p>
+              <p className={`text-lg md:text-xl font-bold ${balance >= 0 ? "text-emerald-500" : "text-destructive"}`}>{fmt(balance)}</p>
               <p className="text-[11px] text-muted-foreground">Receitas - Despesas do período</p>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4 flex items-center justify-end gap-3">
+          <CardContent className="p-3 md:p-4 flex items-center justify-end gap-3">
             <div className="text-right">
               <p className="text-xs text-muted-foreground">Humor</p>
               <p className={`text-sm font-semibold ${mood.color}`}>{mood.label}</p>
@@ -371,10 +371,10 @@ export default function Dashboard() {
       </div>
 
       {/* Gastos por Categoria + Metas */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-2 md:gap-4">
         <Card className="lg:col-span-3">
-          <CardContent className="p-5">
-            <h3 className="font-semibold text-foreground">Gastos por Categoria</h3>
+          <CardContent className="p-3 md:p-5">
+            <h3 className="font-semibold text-foreground text-sm md:text-base">Gastos por Categoria</h3>
             {catEntries.length === 0 ? (
               <div className="mt-8 flex flex-col items-center text-center pb-6">
                 <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
@@ -398,7 +398,7 @@ export default function Dashboard() {
         </Card>
 
         <Card className="lg:col-span-2">
-          <CardContent className="p-5">
+          <CardContent className="p-3 md:p-5">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center"><CalendarCheck className="h-4 w-4 text-primary" /></div>
               <div>
@@ -443,7 +443,7 @@ export default function Dashboard() {
 
       {/* Últimas Transações */}
       <Card>
-        <CardContent className="p-5">
+          <CardContent className="p-3 md:p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center"><CalendarDays className="h-4 w-4 text-primary" /></div>
@@ -484,7 +484,7 @@ export default function Dashboard() {
 
       {/* Alertas */}
       <Card>
-        <CardContent className="p-5">
+        <CardContent className="p-3 md:p-5">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center"><AlertTriangle className="h-4 w-4 text-orange-500" /></div>
             <h3 className="font-semibold text-foreground">Alertas Inteligentes</h3>
