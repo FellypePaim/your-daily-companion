@@ -60,24 +60,34 @@ export function fmt(v: number): string {
   return `R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export function isMediaMessage(message: any): boolean {
+export function isMediaMessage(message: any, evMessageType?: string): boolean {
   const mediaTypes = ["media", "ptt", "audio", "image", "document", "video", "sticker"];
-  return message.isMedia === true || mediaTypes.includes(message.type);
+  const mt = (evMessageType || "").toLowerCase();
+  // Evolution v2: messageType is "audioMessage", "imageMessage", "documentMessage", etc.
+  const isEvMedia = mt.includes("audio") || mt.includes("image") || mt.includes("document") || mt.includes("video") || mt.includes("sticker") || mt === "ptt";
+  return message.isMedia === true || mediaTypes.includes(message.type) || isEvMedia;
 }
 
-export function isAudioMessage(message: any): boolean {
+export function isAudioMessage(message: any, evMessageType?: string): boolean {
   const mt = (message.mediaType || message.type || "").toLowerCase();
+  const evMt = (evMessageType || "").toLowerCase();
   return mt === "ptt" ||
     mt === "audio" ||
     mt.includes("audio") ||
+    evMt === "audiomessage" ||
+    evMt === "ptt" ||
+    evMt.includes("audio") ||
     message.mimetype?.startsWith("audio/") ||
     message.mimetype?.includes("ogg");
 }
 
-export function isImageMessage(message: any): boolean {
+export function isImageMessage(message: any, evMessageType?: string): boolean {
   const mt = (message.mediaType || message.type || "").toLowerCase();
+  const evMt = (evMessageType || "").toLowerCase();
   return mt === "image" ||
     mt.includes("image") ||
+    evMt === "imagemessage" ||
+    evMt.includes("image") ||
     message.mimetype?.startsWith("image/");
 }
 

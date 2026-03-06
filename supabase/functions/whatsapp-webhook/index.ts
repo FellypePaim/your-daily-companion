@@ -82,10 +82,10 @@ serve(async (req) => {
     const messageText = (text || "").trim();
     // effectiveText considers both text messages and button click IDs
     const effectiveText = messageText || buttonId.trim();
-    const isAudio = isAudioMessage(message);
-    const isImage = isImageMessage(message);
+    const isAudio = isAudioMessage(message, evMessageType);
+    const isImage = isImageMessage(message, evMessageType);
 
-    console.log(`Message from ${cleanPhone}: type=${message.type} isMedia=${isMedia} isAudio=${isAudio} isImage=${isImage} text="${messageText}" buttonId="${buttonId}"`);
+    console.log(`Message from ${cleanPhone}: type=${evMessageType || message.type} isMedia=${isMedia} isAudio=${isAudio} isImage=${isImage} text="${messageText}" buttonId="${buttonId}"`);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
