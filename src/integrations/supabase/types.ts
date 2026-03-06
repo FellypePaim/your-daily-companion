@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          key: string
+          name: string
+          xp_reward: number
+        }
+        Insert: {
+          category?: string
+          created_at?: string | null
+          description: string
+          icon?: string
+          id?: string
+          key: string
+          name: string
+          xp_reward?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          key?: string
+          name?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       cards: {
         Row: {
           brand: string | null
@@ -77,6 +110,48 @@ export type Database = {
           id?: string
           name?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      challenges: {
+        Row: {
+          created_at: string | null
+          description: string
+          ends_at: string | null
+          icon: string
+          id: string
+          is_active: boolean
+          starts_at: string | null
+          target_value: number
+          title: string
+          type: string
+          xp_reward: number
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          ends_at?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean
+          starts_at?: string | null
+          target_value?: number
+          title: string
+          type?: string
+          xp_reward?: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          ends_at?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean
+          starts_at?: string | null
+          target_value?: number
+          title?: string
+          type?: string
+          xp_reward?: number
         }
         Relationships: []
       }
@@ -475,6 +550,103 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_challenges: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          current_value: number
+          id: string
+          is_completed: boolean
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          current_value?: number
+          id?: string
+          is_completed?: boolean
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          current_value?: number
+          id?: string
+          is_completed?: boolean
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_gamification: {
+        Row: {
+          last_activity_date: string | null
+          level: number
+          streak_best: number
+          streak_current: number
+          updated_at: string | null
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          last_activity_date?: string | null
+          level?: number
+          streak_best?: number
+          streak_current?: number
+          updated_at?: string | null
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          last_activity_date?: string | null
+          level?: number
+          streak_best?: number
+          streak_current?: number
+          updated_at?: string | null
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
