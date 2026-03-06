@@ -204,6 +204,7 @@ export type Database = {
           notify_night: boolean | null
           subscription_expires_at: string | null
           subscription_plan: string | null
+          updated_at: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -218,6 +219,7 @@ export type Database = {
           notify_night?: boolean | null
           subscription_expires_at?: string | null
           subscription_plan?: string | null
+          updated_at?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -232,6 +234,7 @@ export type Database = {
           notify_night?: boolean | null
           subscription_expires_at?: string | null
           subscription_plan?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -303,6 +306,7 @@ export type Database = {
           notify_minutes_before: number | null
           recurrence: string | null
           title: string
+          updated_at: string | null
           user_id: string
         }
         Insert: {
@@ -315,6 +319,7 @@ export type Database = {
           notify_minutes_before?: number | null
           recurrence?: string | null
           title: string
+          updated_at?: string | null
           user_id: string
         }
         Update: {
@@ -327,6 +332,7 @@ export type Database = {
           notify_minutes_before?: number | null
           recurrence?: string | null
           title?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
