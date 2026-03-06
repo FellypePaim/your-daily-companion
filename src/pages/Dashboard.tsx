@@ -233,7 +233,7 @@ export default function Dashboard() {
           <button onClick={() => setShowWelcome(false)} className="absolute top-3 right-3 text-muted-foreground hover:text-foreground">
             <X className="h-4 w-4" />
           </button>
-          <CardContent className="p-5">
+          <CardContent className="p-3 md:p-5">
             <div className="flex items-start gap-3">
               <span className="text-2xl">👋</span>
               <div>
