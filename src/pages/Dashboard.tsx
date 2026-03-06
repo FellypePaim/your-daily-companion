@@ -443,7 +443,7 @@ export default function Dashboard() {
 
       {/* Últimas Transações */}
       <Card>
-        <CardContent className="p-5">
+          <CardContent className="p-3 md:p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center"><CalendarDays className="h-4 w-4 text-primary" /></div>
