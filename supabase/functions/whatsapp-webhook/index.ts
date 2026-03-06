@@ -3690,7 +3690,7 @@ Metas financeiras: ${goalsCtx}`;
       await sendWhatsAppMessage(cleanPhone, mediaLabel);
 
       try {
-        const mediaData = await downloadMediaFromUazapi(messageId, mediaType, message);
+        const mediaData = await downloadMediaFromEvolution(messageId, mediaType, message);
 
         if (!mediaData) {
           aiResponse = "😕 Não consegui baixar a mídia. Tente enviar novamente ou descreva por texto!";
