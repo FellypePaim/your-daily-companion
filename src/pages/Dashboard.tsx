@@ -315,9 +315,9 @@ export default function Dashboard() {
       <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-transparent cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/dashboard/gamification")}>
         <CardContent className="p-3 md:p-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Star className="h-6 w-6 text-primary" />
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="h-9 w-9 md:h-11 md:w-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Star className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
