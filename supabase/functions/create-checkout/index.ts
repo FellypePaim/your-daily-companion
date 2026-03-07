@@ -71,6 +71,17 @@ serve(async (req) => {
     if (userError || !userData.user?.email) throw new Error("Usuário não autenticado");
 
     const user = userData.user;
+
+    // Rate limiting: max 5 checkout attempts per user per hour
+    const { data: allowed } = await supabaseAdmin.rpc("check_checkout_rate_limit", {
+      _user_id: user.id,
+      _max_attempts: 5,
+      _window_minutes: 60,
+    });
+    if (!allowed) {
+      throw new Error("Muitas tentativas de pagamento. Tente novamente em alguns minutos.");
+    }
+
     const body = await req.json();
     let { plan, billingType, cpfCnpj, creditCard, creditCardHolderInfo, installmentCount, remoteIp } = body;
 

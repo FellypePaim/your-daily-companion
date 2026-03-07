@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { UserPlus, Eye, EyeOff, Moon, Sun } from "lucide-react";
 import braveLogoImg from "@/assets/brave-logo-cropped.png";
 import { supabase } from "@/integrations/supabase/client";
+import { useTheme } from "next-themes";
 
 const formatCpfCnpj = (value: string) => {
   const digits = value.replace(/\D/g, "").slice(0, 14);
@@ -32,12 +33,8 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-    localStorage.setItem("theme", dark ? "dark" : "light");
-  }, [dark]);
+  const { theme, setTheme } = useTheme();
+  const dark = theme === "dark";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +73,7 @@ export default function Signup() {
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => setDark(!dark)}
+        onClick={() => setTheme(dark ? "light" : "dark")}
         className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
       >
         {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
