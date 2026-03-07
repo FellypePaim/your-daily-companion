@@ -106,8 +106,8 @@ function AnimatedBackground() {
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {/* Base gradient mesh */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/10" />
+      {/* Dark base */}
+      <div className="absolute inset-0 bg-background" />
 
       {/* Animated gradient blobs — CSS animations on mobile for GPU compositing */}
       {blobs.map((blob) => (
