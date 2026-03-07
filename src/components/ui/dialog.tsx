@@ -36,7 +36,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed z-50 border bg-background shadow-lg flex flex-col",
+        "fixed z-50 glass-card shadow-lg flex flex-col",
         // Mobile: bottom sheet
         "left-0 right-0 bottom-0 top-auto max-w-lg rounded-t-2xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] max-h-[90vh]",
         // Desktop: centered overlay
