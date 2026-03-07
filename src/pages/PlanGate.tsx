@@ -69,6 +69,7 @@ export default function PlanGate() {
   const { toast } = useToast();
   const [planInfo, setPlanInfo] = useState<{ plan: string; name: string; alreadyUsedTest: boolean } | null>(null);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [cpf, setCpf] = useState("");
 
   useEffect(() => {
     if (!user) return;
