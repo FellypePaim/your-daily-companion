@@ -173,6 +173,7 @@ export default function Settings() {
     await supabase.from("profiles").update({ avatar_url: url }).eq("id", user.id);
     setAvatarUrl(url);
     setUploadingAvatar(false);
+    queryClient.invalidateQueries({ queryKey: ["profile"] });
     toast({ title: "Foto atualizada!" });
   };
 
