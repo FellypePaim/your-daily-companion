@@ -290,19 +290,14 @@ export default function Settings() {
   const currentPlan = PLANS.find(p => p.key === plan);
   const initials = displayName ? displayName.charAt(0).toUpperCase() : "U";
 
-  const handleCheckout = async (planKey: "mensal" | "anual") => {
-    setLoadingPlan(planKey);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { plan: planKey },
-      });
-      if (error || !data?.url) throw new Error(error?.message || "Erro ao criar sessão de pagamento");
-      window.open(data.url, "_blank");
-    } catch (err: any) {
-      toast({ title: "Erro ao processar pagamento", description: err.message, variant: "destructive" });
-    } finally {
-      setLoadingPlan(null);
-    }
+  const handleCheckout = (planKey: "mensal" | "anual") => {
+    setCheckoutPlan(planKey);
+  };
+
+  const getCheckoutDetails = () => {
+    if (!checkoutPlan) return { name: "", price: "", value: 0 };
+    if (checkoutPlan === "mensal") return { name: "Brave Mensal", price: "R$ 19,90/mês", value: 19.90 };
+    return { name: "Brave Anual", price: "R$ 178,80/ano (R$ 14,90/mês)", value: 178.80 };
   };
 
   return (
