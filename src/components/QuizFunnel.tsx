@@ -977,7 +977,7 @@ export default function QuizFunnel({ onOpenAuth }: { onOpenAuth: () => void }) {
 
       {/* Footer */}
       {!showThemePicker && !showClientCheck && (
-        <footer className="py-4 text-center border-t border-border/50 relative z-10 bg-background/90 sm:bg-background/60 sm:backdrop-blur-sm">
+        <footer className="py-4 text-center border-t border-white/[0.06] relative z-10 bg-background/60 backdrop-blur-sm">
           <p className="text-[10px] sm:text-xs text-muted-foreground">
             © 2026 Brave Assessor · Hubflows Tecnologia Ltda
           </p>
