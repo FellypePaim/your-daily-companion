@@ -268,7 +268,7 @@ function HookToast({ hook }: { hook: { emoji: string; text: string; sub: string 
       transition={{ duration: 0.4, ease: easeOut }}
       className="fixed bottom-20 sm:bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 sm:max-w-sm sm:w-auto"
     >
-      <div className="flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-xl p-3 sm:p-4 shadow-xl shadow-primary/5">/
+      <div className="flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-xl p-3 sm:p-4 shadow-xl shadow-primary/5">
         <span className="text-2xl sm:text-3xl shrink-0">{hook.emoji}</span>
         <div className="min-w-0 flex-1">
           <p className="text-xs sm:text-sm font-semibold text-foreground leading-snug break-words">{hook.text}</p>
