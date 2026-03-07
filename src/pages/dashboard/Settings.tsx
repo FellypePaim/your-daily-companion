@@ -102,6 +102,7 @@ export default function Settings() {
 
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
+  const [cpfCnpj, setCpfCnpj] = useState("");
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [plan, setPlan] = useState("free");
@@ -135,6 +136,7 @@ export default function Settings() {
         .maybeSingle();
       if (data) {
         setDisplayName(data.display_name || "");
+        setCpfCnpj((data as any).cpf_cnpj || "");
         setMonthlyIncome(data.monthly_income?.toString() || "");
         setAvatarUrl(data.avatar_url);
         setPlan(data.subscription_plan || "free");
@@ -182,10 +184,12 @@ export default function Settings() {
     setSaving(true);
 
     // Update profile table
+    const cleanCpf = cpfCnpj.replace(/\D/g, "");
     const { error } = await supabase.from("profiles").update({
       display_name: displayName,
       monthly_income: parseFloat(monthlyIncome) || 0,
-    }).eq("id", user.id);
+      cpf_cnpj: cleanCpf || null,
+    } as any).eq("id", user.id);
 
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
@@ -330,6 +334,26 @@ export default function Settings() {
             <div>
               <label className="text-xs font-medium text-muted-foreground">Nome completo</label>
               <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="mt-1" />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground">CPF ou CNPJ</label>
+              <Input
+                value={cpfCnpj}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "").slice(0, 14);
+                  if (digits.length <= 11) {
+                    setCpfCnpj(digits.replace(/(\d{3})(\d{3})?(\d{3})?(\d{2})?/, (_, a, b, c, d) =>
+                      [a, b, c].filter(Boolean).join(".") + (d ? `-${d}` : "")
+                    ));
+                  } else {
+                    setCpfCnpj(digits.replace(/(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, (_, a, b, c, d, ee) =>
+                      [a, b, c].filter(Boolean).join(".") + (d ? `/${d}` : "") + (ee ? `-${ee}` : "")
+                    ));
+                  }
+                }}
+                placeholder="000.000.000-00"
+                className="mt-1"
+              />
             </div>
             <div>
               <label className="text-xs font-medium text-muted-foreground">Renda mensal</label>
