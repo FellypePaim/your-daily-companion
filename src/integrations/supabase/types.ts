@@ -179,6 +179,24 @@ export type Database = {
         }
         Relationships: []
       }
+      checkout_rate_limits: {
+        Row: {
+          attempt_count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          attempt_count?: number
+          user_id: string
+          window_start?: string
+        }
+        Update: {
+          attempt_count?: number
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       family_groups: {
         Row: {
           created_at: string | null
@@ -826,6 +844,14 @@ export type Database = {
     Functions: {
       can_access_family_resource: {
         Args: { _requesting_user_id: string; _resource_user_id: string }
+        Returns: boolean
+      }
+      check_checkout_rate_limit: {
+        Args: {
+          _max_attempts?: number
+          _user_id: string
+          _window_minutes?: number
+        }
         Returns: boolean
       }
       check_whatsapp_rate_limit: {
