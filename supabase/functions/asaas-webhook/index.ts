@@ -22,15 +22,15 @@ serve(async (req) => {
   const webhookToken = Deno.env.get("ASAAS_WEBHOOK_TOKEN");
 
   try {
-    // Validate webhook access token
-    if (webhookToken) {
-      const incomingToken = req.headers.get("asaas-access-token");
-      if (incomingToken !== webhookToken) {
-        console.error("Webhook token inválido ou ausente");
-        return new Response("Unauthorized", { status: 401 });
-      }
-    } else {
-      console.warn("ASAAS_WEBHOOK_TOKEN não configurado — sem validação de token");
+    // Validate webhook access token — fail closed
+    if (!webhookToken) {
+      console.error("ASAAS_WEBHOOK_TOKEN não configurado — rejeitando request");
+      return new Response("Webhook token not configured", { status: 500 });
+    }
+    const incomingToken = req.headers.get("asaas-access-token");
+    if (incomingToken !== webhookToken) {
+      console.error("Webhook token inválido ou ausente");
+      return new Response("Unauthorized", { status: 401 });
     }
 
     const body = await req.json();
