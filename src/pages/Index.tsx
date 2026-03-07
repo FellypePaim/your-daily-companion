@@ -355,7 +355,7 @@ function Features() {
         </motion.h2>
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} style={{ y: sectionY }} className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((f, i) => (
-            <motion.div key={i} variants={fadeScale} className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <motion.div key={i} variants={fadeScale} className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-4 hover:bg-white/[0.06] hover:-translate-y-0.5 transition-all duration-200">
               <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-accent flex items-center justify-center text-accent-foreground">
                 <f.icon className="h-5 w-5" />
               </div>
