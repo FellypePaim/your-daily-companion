@@ -88,7 +88,7 @@ function Header({ onOpenAuth }: { onOpenAuth: () => void }) {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-xl border-b border-white/[0.06]">
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
         <a href="#" className="flex items-center gap-2.5 font-bold text-xl text-foreground">
           <BraveLogo size={38} />
@@ -112,7 +112,7 @@ function Header({ onOpenAuth }: { onOpenAuth: () => void }) {
         </button>
       </div>
       {open && (
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="md:hidden border-t border-border bg-background px-4 pb-4">
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="md:hidden border-t border-white/[0.06] bg-background/80 backdrop-blur-xl px-4 pb-4">
           {links.map((l) => (
             <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block py-3 text-muted-foreground hover:text-foreground transition-colors">
               {l.label}
@@ -137,8 +137,9 @@ function Hero({ onOpenAuth }: { onOpenAuth: () => void }) {
 
   return (
     <section ref={heroRef} className="pt-28 pb-12 md:pt-36 md:pb-20 relative overflow-hidden">
-      {/* Subtle pink glow at bottom */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-40 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
+      {/* Ambient glass orbs */}
+      <div className="absolute top-20 left-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 right-[10%] w-64 h-64 rounded-full bg-blue-500/8 blur-[80px] pointer-events-none" />
 
       <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
         <motion.div initial="hidden" animate="visible" variants={stagger} style={{ y: heroY, opacity: heroOpacity }}>
@@ -182,15 +183,15 @@ function Hero({ onOpenAuth }: { onOpenAuth: () => void }) {
 
           {/* Social proof badges */}
           <motion.div variants={fadeUp} className="mt-6 flex flex-wrap gap-3">
-            <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm shadow-sm">
+            <div className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm px-4 py-2 text-sm">
               <Users className="h-4 w-4 text-primary" />
               <span className="font-semibold text-foreground">+2.000 usuários</span>
             </div>
-            <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm shadow-sm">
+            <div className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm px-4 py-2 text-sm">
               <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
               <span className="font-semibold text-foreground">4.9</span>
             </div>
-            <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm shadow-sm">
+            <div className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm px-4 py-2 text-sm">
               <Shield className="h-4 w-4 text-primary" />
               <span className="font-semibold text-foreground">100% seguro</span>
             </div>
@@ -224,7 +225,7 @@ function Hero({ onOpenAuth }: { onOpenAuth: () => void }) {
 /* ─── O QUE É ─── */
 function WhatIs() {
   return (
-    <section id="o-que-e" className="py-16 md:py-24 bg-secondary/30">
+    <section id="o-que-e" className="py-16 md:py-24 bg-white/[0.02]">
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="container mx-auto px-4 max-w-3xl text-center">
         <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold text-foreground">
           O que é o Brave Assessor?
@@ -300,7 +301,7 @@ function HowItWorks() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
-              <Card className="h-full border-border bg-card hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 pt-4">
+              <Card className="h-full border-white/[0.08] bg-white/[0.03] backdrop-blur-sm hover:bg-white/[0.06] hover:-translate-y-1 transition-all duration-300 pt-4">
                 <CardContent className="p-6 flex flex-col items-center text-center gap-4">
                   <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-primary/10 text-primary">
                     <s.icon className="h-6 w-6" />
@@ -347,14 +348,14 @@ function Features() {
   const sectionY = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
   return (
-    <section id="funcionalidades" className="py-16 md:py-24 bg-secondary/30 relative overflow-hidden" ref={ref}>
+    <section id="funcionalidades" className="py-16 md:py-24 bg-white/[0.02] relative overflow-hidden" ref={ref}>
       <div className="container mx-auto px-4">
         <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={fadeUp} className="text-3xl md:text-4xl font-bold text-center text-foreground">
           Funcionalidades do App de Finanças com IA
         </motion.h2>
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} style={{ y: sectionY }} className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((f, i) => (
-            <motion.div key={i} variants={fadeScale} className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <motion.div key={i} variants={fadeScale} className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-4 hover:bg-white/[0.06] hover:-translate-y-0.5 transition-all duration-200">
               <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-accent flex items-center justify-center text-accent-foreground">
                 <f.icon className="h-5 w-5" />
               </div>
@@ -380,7 +381,7 @@ function SocialProof() {
       <div className="container mx-auto px-4">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger} className="flex flex-wrap justify-center gap-6">
           {stats.map((s, i) => (
-            <motion.div key={i} variants={fadeScale} className="flex items-center gap-3 rounded-full border border-border bg-card px-6 py-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <motion.div key={i} variants={fadeScale} className="flex items-center gap-3 rounded-full border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm px-6 py-3 hover:bg-white/[0.07] hover:-translate-y-0.5 transition-all duration-200">
               <s.icon className="h-5 w-5 text-primary" />
               <span className="font-bold text-foreground">{s.value}</span>
               <span className="text-sm text-muted-foreground">{s.label}</span>
@@ -425,7 +426,7 @@ const plans = [
 
 function Pricing() {
   return (
-    <section id="planos" className="py-16 md:py-24 bg-secondary/30">
+    <section id="planos" className="py-16 md:py-24 bg-white/[0.02]">
       <div className="container mx-auto px-4">
         <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-4xl font-bold text-center text-foreground">
           Planos e Preços do Brave Assessor
@@ -489,7 +490,7 @@ function FAQ() {
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="mt-10">
           <Accordion type="single" collapsible className="space-y-2">
             {faqs.map((f, i) => (
-              <AccordionItem key={i} value={`faq-${i}`} className="border border-border rounded-xl px-4 bg-card">
+              <AccordionItem key={i} value={`faq-${i}`} className="border border-white/[0.08] rounded-xl px-4 bg-white/[0.03] backdrop-blur-sm">
                 <AccordionTrigger className="text-left text-foreground hover:no-underline">
                   {f.q}
                 </AccordionTrigger>
@@ -508,7 +509,7 @@ function FAQ() {
 /* ─── WHY BRAVE ─── */
 function WhyNox() {
   return (
-    <section className="py-16 md:py-24 bg-secondary/30">
+    <section className="py-16 md:py-24 bg-white/[0.02]">
       <div className="container mx-auto px-4 max-w-3xl text-center">
         <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-3xl md:text-4xl font-bold text-foreground">
           Por que escolher o Brave?
@@ -537,7 +538,7 @@ function WhyNox() {
 /* ─── FOOTER ─── */
 function Footer() {
   return (
-    <footer className="border-t border-border py-10">
+    <footer className="border-t border-white/[0.06] py-10">
       <div className="container mx-auto px-4 text-center space-y-3">
         <p className="text-sm text-muted-foreground">Hubflows Tecnologia Ltda — CNPJ: 49.084.621/0001-90</p>
         <p className="text-sm text-muted-foreground">© 2026 Brave Assessor. Todos os direitos reservados.</p>
@@ -575,7 +576,7 @@ const marqueeRow2 = [
 
 function MarqueeChip({ label, color }: { label: string; color: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 shadow-sm whitespace-nowrap flex-shrink-0">
+    <div className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm px-4 py-2.5 shadow-sm whitespace-nowrap flex-shrink-0">
       <div className={`h-3 w-3 rounded-full ${color}`} />
       <span className="text-sm font-medium text-foreground">{label}</span>
     </div>
@@ -630,7 +631,7 @@ const benefits = [
 
 function Benefits() {
   return (
-    <section className="py-16 md:py-24 bg-secondary/20">
+    <section className="py-16 md:py-24 bg-white/[0.02]">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Image with overlay */}
@@ -690,7 +691,7 @@ function Benefits() {
                 <motion.div
                   key={i}
                   variants={fadeUp}
-                  className="flex items-center gap-4 rounded-xl border border-border bg-card p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                  className="flex items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-4 hover:bg-white/[0.06] hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                     <b.icon className="h-5 w-5" />
@@ -725,7 +726,7 @@ const comparisonRows = [
 ] as const;
 function Comparison() {
   return (
-    <section className="py-16 md:py-24 bg-secondary/20">
+    <section className="py-16 md:py-24 bg-white/[0.02]">
       <div className="container mx-auto px-4">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="text-center">
           <motion.span variants={fadeUp} className="inline-flex items-center rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium text-foreground">
@@ -812,7 +813,13 @@ const Index = () => {
   }
 
   return (
-    <main className="overflow-x-hidden">
+    <main className="overflow-x-hidden bg-background relative">
+      {/* Global ambient orbs for landing */}
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0">
+        <div className="absolute top-[20%] left-[5%] w-96 h-96 rounded-full bg-primary/[0.06] blur-[120px]" />
+        <div className="absolute top-[60%] right-[5%] w-80 h-80 rounded-full bg-blue-500/[0.05] blur-[100px]" />
+        <div className="absolute bottom-[10%] left-[40%] w-72 h-72 rounded-full bg-violet-500/[0.04] blur-[100px]" />
+      </div>
       <Header onOpenAuth={() => setAuthOpen(true)} />
       <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
       <Hero onOpenAuth={() => setAuthOpen(true)} />

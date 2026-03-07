@@ -269,7 +269,29 @@ export default function Dashboard() {
           <h1 className="text-lg md:text-3xl font-bold text-foreground">Olá, {displayName}! 👋</h1>
           <p className="text-muted-foreground text-xs md:text-sm mt-0.5 md:mt-1">Aqui está seu resumo financeiro</p>
         </div>
-        <AddTransactionDialog />
+        <div className="flex items-center gap-2">
+          <AddTransactionDialog />
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-full text-xs gap-1.5"
+            onClick={() => navigate("/dashboard/bills")}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Nova Conta</span>
+            <span className="sm:hidden">Conta</span>
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-full text-xs gap-1.5"
+            onClick={() => navigate("/dashboard/reminders")}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Novo Lembrete</span>
+            <span className="sm:hidden">Lembrete</span>
+          </Button>
+        </div>
       </div>
 
       {/* Period Selector */}
