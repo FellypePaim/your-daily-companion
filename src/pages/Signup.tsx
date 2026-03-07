@@ -8,12 +8,26 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from "sonner";
 import { UserPlus, Eye, EyeOff, Moon, Sun } from "lucide-react";
 import braveLogoImg from "@/assets/brave-logo-cropped.png";
+import { supabase } from "@/integrations/supabase/client";
+
+const formatCpfCnpj = (value: string) => {
+  const digits = value.replace(/\D/g, "").slice(0, 14);
+  if (digits.length <= 11) {
+    return digits.replace(/(\d{3})(\d{3})?(\d{3})?(\d{2})?/, (_, a, b, c, d) =>
+      [a, b, c].filter(Boolean).join(".") + (d ? `-${d}` : "")
+    );
+  }
+  return digits.replace(/(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, (_, a, b, c, d, e) =>
+    [a, b, c].filter(Boolean).join(".") + (d ? `/${d}` : "") + (e ? `-${e}` : "")
+  );
+};
 
 export default function Signup() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
+  const [cpfCnpj, setCpfCnpj] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -27,6 +41,11 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanCpf = cpfCnpj.replace(/\D/g, "");
+    if (cleanCpf.length !== 11 && cleanCpf.length !== 14) {
+      toast.error("Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) válido");
+      return;
+    }
     if (password !== confirmPassword) {
       toast.error("As senhas não conferem");
       return;
@@ -38,6 +57,11 @@ export default function Signup() {
     setLoading(true);
     try {
       await signUp(email, password, displayName);
+      // Save CPF/CNPJ to profile after signup
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("profiles").update({ cpf_cnpj: cleanCpf } as any).eq("id", user.id);
+      }
       toast.success("Conta criada com sucesso!");
       navigate("/dashboard");
     } catch (err: any) {
@@ -86,6 +110,17 @@ export default function Signup() {
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="cpfCnpj">CPF ou CNPJ</Label>
+              <Input
+                id="cpfCnpj"
+                type="text"
+                placeholder="000.000.000-00"
+                value={cpfCnpj}
+                onChange={(e) => setCpfCnpj(formatCpfCnpj(e.target.value))}
                 required
               />
             </div>
