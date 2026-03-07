@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import WhatsAppLinkCard from "@/components/WhatsAppLinkCard";
 import { useGamification } from "@/hooks/useGamification";
 import { motion } from "framer-motion";
+import CheckoutDialog from "@/components/CheckoutDialog";
 import {
   User, Camera, MessageSquare, Crown, HeadphonesIcon,
   Bell, Mail, Sparkles,
