@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -95,6 +96,7 @@ export default function Settings() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { xp, level, levelTitle, streak, bestStreak, achievements, unlockedKeys } = useGamification();
 
@@ -171,6 +173,7 @@ export default function Settings() {
     await supabase.from("profiles").update({ avatar_url: url }).eq("id", user.id);
     setAvatarUrl(url);
     setUploadingAvatar(false);
+    queryClient.invalidateQueries({ queryKey: ["profile"] });
     toast({ title: "Foto atualizada!" });
   };
 

@@ -32,6 +32,20 @@ export function AppSidebar() {
   const displayName = user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Usuário";
   const { xp, level, levelTitle, streak } = useGamification();
 
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("avatar_url, display_name")
+        .eq("id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+  const avatarUrl = profile?.avatar_url;
+
   const { data: reminderCount = 0 } = useQuery({
     queryKey: ["reminders-count", user?.id],
     queryFn: async () => {
@@ -175,9 +189,13 @@ export function AppSidebar() {
             onClick={() => navigate("/dashboard/settings")}
             className="flex items-center gap-3 px-3 py-3 w-full text-left hover:bg-white/[0.04] transition-colors group-data-[collapsible=icon]:justify-center"
           >
-            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">
-              {displayName.charAt(0).toUpperCase()}
-            </div>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={displayName} className="h-9 w-9 rounded-full object-cover shrink-0" />
+            ) : (
+              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">
+                {displayName.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div className="group-data-[collapsible=icon]:hidden min-w-0 flex-1">
               <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
               <div className="flex items-center gap-2 mt-0.5">
