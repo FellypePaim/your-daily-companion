@@ -136,72 +136,70 @@ export default function Reports() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 md:space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Relatórios</h1>
-          <p className="text-muted-foreground text-sm">Análises detalhadas das suas finanças</p>
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="text-lg md:text-2xl font-bold text-foreground">Relatórios</h1>
+          <p className="text-muted-foreground text-xs md:text-sm">Análises das suas finanças</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="rounded-full gap-1.5" onClick={handleExportCSV}>
-            <FileSpreadsheet className="h-4 w-4" /> Exportar CSV
-          </Button>
-        </div>
+        <Button variant="outline" size="sm" className="rounded-full gap-1 text-xs h-8 px-3" onClick={handleExportCSV}>
+          <FileSpreadsheet className="h-3.5 w-3.5" /> CSV
+        </Button>
       </div>
 
       {/* Period Selection */}
-      <Card className="p-5">
-        <div className="flex flex-wrap gap-4 items-end">
-          <div className="flex-1 min-w-[140px]">
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Mês</label>
+      <Card className="p-3 md:p-5">
+        <div className="flex flex-wrap gap-2.5 md:gap-4 items-end">
+          <div className="flex-1 min-w-[110px] md:min-w-[140px]">
+            <label className="text-[10px] md:text-xs font-medium text-muted-foreground mb-1 block">Mês</label>
             <Select value={month} onValueChange={setMonth}>
-              <SelectTrigger className="rounded-lg"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="rounded-lg h-8 md:h-10 text-xs md:text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>{months.map((m, i) => <SelectItem key={i} value={String(i)}>{m}</SelectItem>)}</SelectContent>
             </Select>
           </div>
-          <div className="flex-1 min-w-[100px]">
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Ano</label>
+          <div className="flex-1 min-w-[80px] md:min-w-[100px]">
+            <label className="text-[10px] md:text-xs font-medium text-muted-foreground mb-1 block">Ano</label>
             <Select value={year} onValueChange={setYear}>
-              <SelectTrigger className="rounded-lg"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="rounded-lg h-8 md:h-10 text-xs md:text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>{[2024, 2025, 2026].map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
             </Select>
           </div>
-          <div className="flex items-center gap-2 border border-border rounded-lg px-3 py-2 text-sm text-muted-foreground">
-            <Send className="h-4 w-4" />
-            <span className="whitespace-nowrap">WhatsApp</span>
+          <div className="flex items-center gap-1.5 md:gap-2 border border-border rounded-lg px-2.5 md:px-3 py-1.5 md:py-2 text-xs md:text-sm text-muted-foreground">
+            <Send className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            <span className="whitespace-nowrap hidden sm:inline">WhatsApp</span>
             <Switch checked={sendWhatsApp} onCheckedChange={setSendWhatsApp} />
           </div>
         </div>
       </Card>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        <Card className="p-4 flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
-            <TrendingUp className="h-5 w-5 text-emerald-600" />
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 md:gap-4">
+        <Card className="p-3 md:p-4 flex items-center gap-2.5 md:gap-3">
+          <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+            <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-emerald-600" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Receitas</p>
-            <p className="font-bold text-emerald-600">{fmt(totalIncome)}</p>
+            <p className="text-[10px] md:text-xs text-muted-foreground">Receitas</p>
+            <p className="font-bold text-xs md:text-base text-emerald-600">{fmt(totalIncome)}</p>
           </div>
         </Card>
-        <Card className="p-4 flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
-            <TrendingDown className="h-5 w-5 text-destructive" />
+        <Card className="p-3 md:p-4 flex items-center gap-2.5 md:gap-3">
+          <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
+            <TrendingDown className="h-4 w-4 md:h-5 md:w-5 text-destructive" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Despesas</p>
-            <p className="font-bold text-destructive">{fmt(totalExpense)}</p>
+            <p className="text-[10px] md:text-xs text-muted-foreground">Despesas</p>
+            <p className="font-bold text-xs md:text-base text-destructive">{fmt(totalExpense)}</p>
           </div>
         </Card>
-        <Card className="p-4 flex items-center gap-3 col-span-2 sm:col-span-1">
-          <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-            <DollarSign className="h-5 w-5 text-primary" />
+        <Card className="p-3 md:p-4 flex items-center gap-2.5 md:gap-3 col-span-2 sm:col-span-1">
+          <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+            <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-primary" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Saldo do Mês</p>
-            <p className={`font-bold ${totalIncome - totalExpense >= 0 ? "text-emerald-600" : "text-destructive"}`}>
+            <p className="text-[10px] md:text-xs text-muted-foreground">Saldo</p>
+            <p className={`font-bold text-xs md:text-base ${totalIncome - totalExpense >= 0 ? "text-emerald-600" : "text-destructive"}`}>
               {fmt(totalIncome - totalExpense)}
             </p>
           </div>

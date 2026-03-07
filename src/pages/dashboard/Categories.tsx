@@ -61,7 +61,6 @@ export default function Categories() {
     enabled: !!user,
   });
 
-  // Map: category_id -> spent amount this month
   const spentByCategory = useMemo(() => {
     const map: Record<string, number> = {};
     monthTransactions.forEach(t => {
@@ -76,54 +75,55 @@ export default function Categories() {
   const exceeded = categories.filter(c => c.budget_limit && (spentByCategory[c.id] || 0) >= Number(c.budget_limit)).length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Categorias</h1>
-          <p className="text-muted-foreground text-sm">Orçamentos e gastos do mês atual</p>
+    <div className="space-y-3 md:space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="text-lg md:text-2xl font-bold text-foreground">Categorias</h1>
+          <p className="text-muted-foreground text-xs md:text-sm">Orçamentos e gastos do mês</p>
         </div>
-        <Button className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5" onClick={() => setShowNew(true)}>
-          <Plus className="h-4 w-4" /> Nova Categoria
+        <Button size="sm" className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground gap-1 text-xs h-8 px-3" onClick={() => setShowNew(true)}>
+          <Plus className="h-3.5 w-3.5" /> Nova
         </Button>
       </div>
 
       {/* Summary */}
       {totalWithBudget > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <Card className="p-4 flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-              <Target className="h-4 w-4 text-primary" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 md:gap-3">
+          <Card className="p-3 md:p-4 flex items-center gap-2.5 md:gap-3">
+            <div className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <Target className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Com orçamento</p>
-              <p className="font-bold text-foreground">{totalWithBudget} categorias</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground">Com orçamento</p>
+              <p className="font-bold text-foreground text-xs md:text-sm">{totalWithBudget} cat.</p>
             </div>
           </Card>
-          <Card className={`p-4 flex items-center gap-3 ${exceeded > 0 ? "border-destructive/30" : ""}`}>
-            <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ${exceeded > 0 ? "bg-destructive/10" : "bg-emerald-500/10"}`}>
+          <Card className={`p-3 md:p-4 flex items-center gap-2.5 md:gap-3 ${exceeded > 0 ? "border-destructive/30" : ""}`}>
+            <div className={`h-8 w-8 md:h-9 md:w-9 rounded-xl flex items-center justify-center shrink-0 ${exceeded > 0 ? "bg-destructive/10" : "bg-emerald-500/10"}`}>
               {exceeded > 0
-                ? <AlertTriangle className="h-4 w-4 text-destructive" />
-                : <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                ? <AlertTriangle className="h-3.5 w-3.5 md:h-4 md:w-4 text-destructive" />
+                : <CheckCircle2 className="h-3.5 w-3.5 md:h-4 md:w-4 text-emerald-600" />
               }
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Estouradas</p>
-              <p className={`font-bold ${exceeded > 0 ? "text-destructive" : "text-emerald-600"}`}>{exceeded} {exceeded === 1 ? "categoria" : "categorias"}</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground">Estouradas</p>
+              <p className={`font-bold text-xs md:text-sm ${exceeded > 0 ? "text-destructive" : "text-emerald-600"}`}>{exceeded}</p>
             </div>
           </Card>
-          <Card className="p-4 flex items-center gap-3 col-span-2 sm:col-span-1">
-            <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-              <DollarSign className="h-4 w-4 text-primary" />
+          <Card className="p-3 md:p-4 flex items-center gap-2.5 md:gap-3 col-span-2 sm:col-span-1">
+            <div className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <DollarSign className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Total gasto no mês</p>
-              <p className="font-bold text-foreground">{fmt(Object.values(spentByCategory).reduce((s, v) => s + v, 0))}</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground">Total gasto</p>
+              <p className="font-bold text-foreground text-xs md:text-sm">{fmt(Object.values(spentByCategory).reduce((s, v) => s + v, 0))}</p>
             </div>
           </Card>
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         {categories.map((cat, i) => {
           const IconComp = iconMap[cat.icon || ""] || Package;
           const style = styleMap[cat.color || ""] || styleMap["#6b7280"];
@@ -136,64 +136,57 @@ export default function Categories() {
           return (
             <Card
               key={cat.id}
-              className={`p-5 relative hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in ${isOver ? "border-destructive/40 ring-1 ring-destructive/20" : ""}`}
+              className={`p-3.5 md:p-5 relative hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group animate-fade-in ${isOver ? "border-destructive/40 ring-1 ring-destructive/20" : ""}`}
               style={{ animationDelay: `${i * 60}ms`, animationFillMode: "both" }}
               onClick={() => setEditCategory(cat)}
             >
-              {/* Edit icon */}
-              <button className="absolute top-3 right-8 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-muted z-10">
+              <button className="absolute top-2.5 right-7 md:top-3 md:right-8 opacity-60 md:opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-muted z-10">
                 <Pencil className="h-3 w-3 text-muted-foreground" />
               </button>
 
-              <div className="flex items-start gap-3 mb-3">
-                <div className={`h-12 w-12 rounded-2xl ${style.bg} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300`}>
-                  <IconComp className={`h-6 w-6 ${style.text} drop-shadow-sm`} />
+              <div className="flex items-start gap-2.5 md:gap-3 mb-2.5 md:mb-3">
+                <div className={`h-10 w-10 md:h-12 md:w-12 rounded-2xl ${style.bg} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300`}>
+                  <IconComp className={`h-5 w-5 md:h-6 md:w-6 ${style.text} drop-shadow-sm`} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-foreground text-sm">{cat.name}</p>
+                  <p className="font-semibold text-foreground text-xs md:text-sm">{cat.name}</p>
                   {limit ? (
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5">
                       {fmt(spent)} <span className="text-muted-foreground/60">de</span> {fmt(limit)}
                     </p>
                   ) : (
                     <button
-                      className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-primary/80 hover:text-primary border border-dashed border-primary/30 hover:border-primary/60 rounded-lg px-2 py-0.5 transition-all hover:bg-primary/5"
+                      className="mt-1 flex items-center gap-1 text-[10px] md:text-[11px] font-medium text-primary/80 hover:text-primary border border-dashed border-primary/30 hover:border-primary/60 rounded-lg px-1.5 md:px-2 py-0.5 transition-all hover:bg-primary/5"
                       onClick={(e) => { e.stopPropagation(); setEditCategory(cat); }}
                     >
-                      <Target className="h-3 w-3" />
+                      <Target className="h-2.5 w-2.5 md:h-3 md:w-3" />
                       Definir orçamento
                     </button>
                   )}
                 </div>
-                <div className={`absolute top-4 right-4 h-3.5 w-3.5 rounded-full ${isOver ? "bg-destructive" : style.dot} shadow-md group-hover:scale-125 transition-transform duration-300`} />
+                <div className={`absolute top-3.5 right-3.5 md:top-4 md:right-4 h-3 w-3 md:h-3.5 md:w-3.5 rounded-full ${isOver ? "bg-destructive" : style.dot} shadow-md group-hover:scale-125 transition-transform duration-300`} />
               </div>
 
-              {/* Budget progress */}
               {limit !== null && pct !== null && (
-                <div className="space-y-1.5">
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div className="space-y-1">
+                  <div className="h-1.5 md:h-2 bg-muted rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all duration-700 ${isOver ? "bg-destructive" : isClose ? "bg-amber-500" : style.bar}`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className={`text-[10px] font-medium ${isOver ? "text-destructive" : isClose ? "text-amber-600" : "text-muted-foreground"}`}>
-                      {isOver
-                        ? `⚠ Estourou ${fmt(spent - limit)}`
-                        : isClose
-                        ? `🟡 ${pct.toFixed(0)}% usado`
-                        : `${pct.toFixed(0)}% usado`}
+                    <span className={`text-[9px] md:text-[10px] font-medium ${isOver ? "text-destructive" : isClose ? "text-amber-600" : "text-muted-foreground"}`}>
+                      {isOver ? `⚠ +${fmt(spent - limit)}` : `${pct.toFixed(0)}%`}
                     </span>
-                    <span className="text-[10px] text-muted-foreground">{fmt(Math.max(0, limit - spent))} restam</span>
+                    <span className="text-[9px] md:text-[10px] text-muted-foreground">{fmt(Math.max(0, limit - spent))} restam</span>
                   </div>
                 </div>
               )}
 
-              {/* No budget: show spent */}
               {!limit && spent > 0 && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Gasto este mês: <span className="font-semibold text-foreground">{fmt(spent)}</span>
+                <p className="text-[10px] md:text-xs text-muted-foreground mt-1">
+                  Gasto: <span className="font-semibold text-foreground">{fmt(spent)}</span>
                 </p>
               )}
             </Card>
@@ -201,10 +194,10 @@ export default function Categories() {
         })}
 
         {categories.length === 0 && (
-          <div className="col-span-full text-center py-12 text-muted-foreground">
-            <Package className="h-12 w-12 mx-auto mb-3 opacity-40" />
-            <p className="font-medium">Nenhuma categoria ainda</p>
-            <p className="text-sm mt-1">Crie sua primeira categoria para organizar seus gastos</p>
+          <div className="col-span-full text-center py-8 md:py-12 text-muted-foreground">
+            <Package className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-3 opacity-40" />
+            <p className="font-medium text-sm">Nenhuma categoria ainda</p>
+            <p className="text-xs mt-1">Crie sua primeira categoria</p>
           </div>
         )}
       </div>
