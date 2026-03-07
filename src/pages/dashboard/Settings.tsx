@@ -114,6 +114,7 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [loadingPortal, setLoadingPortal] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   // Security: change email / password
   const [newEmail, setNewEmail] = useState("");
@@ -286,6 +287,21 @@ export default function Settings() {
 
   const currentPlan = PLANS.find(p => p.key === plan);
   const initials = displayName ? displayName.charAt(0).toUpperCase() : "U";
+
+  const handleCheckout = async (planKey: "mensal" | "anual") => {
+    setLoadingPlan(planKey);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { plan: planKey },
+      });
+      if (error || !data?.url) throw new Error(error?.message || "Erro ao criar sessão de pagamento");
+      window.open(data.url, "_blank");
+    } catch (err: any) {
+      toast({ title: "Erro ao processar pagamento", description: err.message, variant: "destructive" });
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -613,10 +629,22 @@ export default function Settings() {
                   <div className="mt-4 text-center">
                     <p className="text-xs font-medium text-emerald-600">✓ Plano atual</p>
                   </div>
-                ) : (
-                  <div className="mt-4 text-center">
-                    <p className="text-xs text-muted-foreground">Entre em contato para assinar este plano</p>
-                  </div>
+                ) : p.key === "teste" ? null : (
+                  <Button
+                    size="sm"
+                    className="w-full mt-4 rounded-xl"
+                    disabled={loadingPlan === p.key}
+                    onClick={() => handleCheckout(p.key as "mensal" | "anual")}
+                  >
+                    {loadingPlan === p.key ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                        Aguarde…
+                      </>
+                    ) : (
+                      "Assinar agora"
+                    )}
+                  </Button>
                 )}
               </div>
             );
