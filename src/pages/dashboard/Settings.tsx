@@ -102,6 +102,7 @@ export default function Settings() {
 
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
+  const [cpfCnpj, setCpfCnpj] = useState("");
   const [monthlyIncome, setMonthlyIncome] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [plan, setPlan] = useState("free");
