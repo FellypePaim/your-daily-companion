@@ -156,7 +156,7 @@ export default function Settings() {
 
     // Ensure bucket exists - upload directly
     const { error: uploadErr } = await supabase.storage
-      .from("support-attachments")
+      .from("avatars")
       .upload(path, file, { upsert: true });
 
     if (uploadErr) {
