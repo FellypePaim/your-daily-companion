@@ -38,7 +38,11 @@ serve(async (req) => {
     const searchData = await searchRes.json();
 
     if (!searchData.data || searchData.data.length === 0) {
-      throw new Error("Nenhuma conta encontrada no Asaas para este e-mail");
+      // No Asaas customer yet — return a message instead of throwing
+      return new Response(JSON.stringify({ error: "Você ainda não possui cobranças. Assine um plano para acessar o portal de pagamentos.", noCustomer: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     }
 
     const customerId = searchData.data[0].id;
@@ -54,7 +58,6 @@ serve(async (req) => {
     if (subsData.data && subsData.data.length > 0) {
       const activeSub = subsData.data.find((s: any) => s.status === "ACTIVE") || subsData.data[0];
       
-      // Get latest payment for this subscription
       const paymentsRes = await fetch(`${ASAAS_API}/subscriptions/${activeSub.id}/payments?limit=1&sort=dueDate&order=desc`, {
         headers: { "access_token": asaasKey },
       });
@@ -66,7 +69,6 @@ serve(async (req) => {
     }
 
     if (!portalUrl) {
-      // Fallback: list recent payments for this customer
       const paymentsRes = await fetch(`${ASAAS_API}/payments?customer=${customerId}&limit=1&sort=dueDate&order=desc`, {
         headers: { "access_token": asaasKey },
       });
@@ -77,7 +79,10 @@ serve(async (req) => {
     }
 
     if (!portalUrl) {
-      throw new Error("Nenhuma cobrança encontrada. Entre em contato com o suporte.");
+      return new Response(JSON.stringify({ error: "Nenhuma cobrança encontrada ainda. Assine um plano primeiro.", noPayments: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     }
 
     console.log(`Portal Asaas para user=${user.id}`);

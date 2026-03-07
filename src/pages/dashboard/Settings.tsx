@@ -270,7 +270,12 @@ export default function Settings() {
     setLoadingPortal(true);
     try {
       const { data, error } = await supabase.functions.invoke("customer-portal");
-      if (error || !data?.url) throw new Error(error?.message || "Erro ao abrir portal");
+      if (error) throw new Error(error.message || "Erro ao abrir portal");
+      if (data?.noCustomer || data?.noPayments) {
+        toast({ title: "Sem cobranças", description: data.error || "Assine um plano primeiro para acessar o portal." });
+        return;
+      }
+      if (!data?.url) throw new Error("Erro ao abrir portal");
       window.open(data.url, "_blank");
     } catch (err: any) {
       toast({ title: "Erro", description: err.message, variant: "destructive" });
