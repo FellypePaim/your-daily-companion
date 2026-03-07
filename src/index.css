@@ -206,7 +206,6 @@
 :root:not(.dark) .bg-orb-purple {
   background: radial-gradient(circle, hsl(263 70% 65% / 0.03) 0%, transparent 70%);
 }
-}
 
 /* Custom scrollbar */
 * {
