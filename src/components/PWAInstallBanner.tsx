@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, X } from "lucide-react";
 
@@ -15,15 +15,27 @@ function useIsPWA() {
   return isPWA;
 }
 
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+}
+
 export default function PWAInstallBanner() {
   const navigate = useNavigate();
   const isPWA = useIsPWA();
   const [dismissed, setDismissed] = useState(false);
+  const deferredPromptRef = useRef<any>(null);
 
   useEffect(() => {
     if (localStorage.getItem(STORAGE_KEY) === "true") {
       setDismissed(true);
     }
+
+    const handler = (e: Event) => {
+      e.preventDefault();
+      deferredPromptRef.current = e;
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
   const handleDismiss = () => {
@@ -31,11 +43,27 @@ export default function PWAInstallBanner() {
     setDismissed(true);
   };
 
+  const handleInstall = async () => {
+    if (isIOS()) {
+      navigate("/install");
+      return;
+    }
+
+    if (deferredPromptRef.current) {
+      deferredPromptRef.current.prompt();
+      await deferredPromptRef.current.userChoice;
+      deferredPromptRef.current = null;
+    } else {
+      // Fallback if prompt not available
+      navigate("/install");
+    }
+  };
+
   if (isPWA || dismissed) return null;
 
   return (
     <button
-      onClick={() => navigate("/install")}
+      onClick={handleInstall}
       className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors group relative"
     >
       <Download className="h-3 w-3" />
