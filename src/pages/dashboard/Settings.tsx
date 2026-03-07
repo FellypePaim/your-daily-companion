@@ -288,6 +288,21 @@ export default function Settings() {
   const currentPlan = PLANS.find(p => p.key === plan);
   const initials = displayName ? displayName.charAt(0).toUpperCase() : "U";
 
+  const handleCheckout = async (planKey: "mensal" | "anual") => {
+    setLoadingPlan(planKey);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { plan: planKey },
+      });
+      if (error || !data?.url) throw new Error(error?.message || "Erro ao criar sessão de pagamento");
+      window.open(data.url, "_blank");
+    } catch (err: any) {
+      toast({ title: "Erro ao processar pagamento", description: err.message, variant: "destructive" });
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
