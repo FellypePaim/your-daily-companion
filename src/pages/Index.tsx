@@ -301,7 +301,7 @@ function HowItWorks() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
-              <Card className="h-full border-border bg-card hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 pt-4">
+              <Card className="h-full border-white/[0.08] bg-white/[0.03] backdrop-blur-sm hover:bg-white/[0.06] hover:-translate-y-1 transition-all duration-300 pt-4">
                 <CardContent className="p-6 flex flex-col items-center text-center gap-4">
                   <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-primary/10 text-primary">
                     <s.icon className="h-6 w-6" />
