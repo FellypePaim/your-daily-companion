@@ -222,7 +222,7 @@ function ThemePicker({ onChoose }: { onChoose: (theme: "light" | "dark") => void
             onClick={() => onChoose("light")}
             whileHover={{ scale: 1.04, y: -2 }}
             whileTap={{ scale: 0.97 }}
-            className="group relative flex flex-col items-center gap-2 sm:gap-3 p-4 sm:p-6 rounded-3xl border-2 border-border bg-card hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300"
+            className="group relative flex flex-col items-center gap-2 sm:gap-3 p-4 sm:p-6 rounded-3xl border-2 border-white/[0.08] bg-white/[0.03] backdrop-blur-sm hover:border-primary/50 hover:bg-white/[0.06] transition-all duration-300"
           >
             <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-2xl bg-amber-50 dark:bg-amber-950/30 flex items-center justify-center group-hover:bg-amber-100 dark:group-hover:bg-amber-900/40 transition-colors">
               <Sun className="h-6 w-6 sm:h-8 sm:w-8 text-amber-500" />
