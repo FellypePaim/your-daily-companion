@@ -6,7 +6,7 @@ verify_jwt = false
 [functions.create-checkout]
 verify_jwt = false
 
-[functions.stripe-webhook]
+[functions.asaas-webhook]
 verify_jwt = false
 
 [functions.nylo-chat]

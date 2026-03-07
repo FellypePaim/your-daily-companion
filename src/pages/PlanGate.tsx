@@ -167,7 +167,7 @@ export default function PlanGate() {
             <p className="text-muted-foreground max-w-md mx-auto text-sm">
               {isExpired
                 ? `Olá${planInfo?.name ? `, ${planInfo.name}` : ""}! Seu plano chegou ao fim. Renove para continuar acessando o Brave Assessor.`
-                : `Olá${planInfo?.name ? `, ${planInfo.name}` : ""}! Assine agora e tenha acesso completo ao Brave Assessor. Pagamento 100% seguro via Stripe.`}
+                : `Olá${planInfo?.name ? `, ${planInfo.name}` : ""}! Assine agora e tenha acesso completo ao Brave Assessor. Pagamento 100% seguro via PIX, boleto ou cartão.`}
             </p>
           </div>
 
