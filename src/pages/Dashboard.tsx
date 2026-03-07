@@ -16,6 +16,7 @@ import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { AnimatePresence } from "framer-motion";
 import { useGamification } from "@/hooks/useGamification";
+import RecurrenceSuggestions from "@/components/RecurrenceSuggestions";
 
 type Period = "today" | "week" | "month";
 
