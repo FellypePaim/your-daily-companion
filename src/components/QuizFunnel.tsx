@@ -476,7 +476,7 @@ function HowWeHelp({ answers, onContinue }: { answers: QuizAnswers; onContinue: 
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            className="flex items-start gap-3 p-3 sm:p-4 rounded-2xl border border-border bg-card/80"
+            className="flex items-start gap-3 p-3 sm:p-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm"
           >
             <div className="flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
               <sol.icon className="h-5 w-5 sm:h-6 sm:w-6" />
