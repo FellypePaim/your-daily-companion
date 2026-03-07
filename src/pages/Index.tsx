@@ -538,7 +538,7 @@ function WhyNox() {
 /* ─── FOOTER ─── */
 function Footer() {
   return (
-    <footer className="border-t border-border py-10">
+    <footer className="border-t border-white/[0.06] py-10">
       <div className="container mx-auto px-4 text-center space-y-3">
         <p className="text-sm text-muted-foreground">Hubflows Tecnologia Ltda — CNPJ: 49.084.621/0001-90</p>
         <p className="text-sm text-muted-foreground">© 2026 Brave Assessor. Todos os direitos reservados.</p>
