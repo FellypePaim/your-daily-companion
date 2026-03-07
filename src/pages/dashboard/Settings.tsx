@@ -744,6 +744,10 @@ export default function Settings() {
               onCheckedChange={(v) => { setNotifyMonthlyReport(v); saveNotifications("notify_monthly_report", v); }}
             />
           </div>
+
+
+          {/* Push Notifications */}
+          <PushNotificationToggle />
         </div>
       </Card>
 
