@@ -22,7 +22,6 @@ async function findOrCreateCustomer(asaasKey: string, user: any, cpfCnpj?: strin
 
   if (searchData.data && searchData.data.length > 0) {
     const existing = searchData.data[0];
-    // Update cpfCnpj if provided and not already set
     if (cpfCnpj && !existing.cpfCnpj) {
       await fetch(`${ASAAS_API}/customers/${existing.id}`, {
         method: "PUT",
@@ -73,7 +72,7 @@ serve(async (req) => {
 
     const user = userData.user;
     const body = await req.json();
-    let { plan, mode, billingType, value, description, cpfCnpj } = body;
+    let { plan, billingType, cpfCnpj, creditCard, creditCardHolderInfo, installmentCount, remoteIp } = body;
 
     // Fetch CPF from profile if not provided
     if (!cpfCnpj) {
@@ -88,87 +87,92 @@ serve(async (req) => {
     const asaasKey = Deno.env.get("ASAAS_API_KEY");
     if (!asaasKey) throw new Error("ASAAS_API_KEY não configurada");
 
+    if (!plan || !PLAN_CONFIG[plan]) {
+      throw new Error(`Plano inválido: ${plan}. Use 'mensal' ou 'anual'.`);
+    }
+
+    const config = PLAN_CONFIG[plan];
     const customerId = await findOrCreateCustomer(asaasKey, user, cpfCnpj);
 
     const nextDueDate = new Date();
     nextDueDate.setDate(nextDueDate.getDate() + 1);
     const dueDateStr = nextDueDate.toISOString().slice(0, 10);
 
-    // ── One-off payment (PIX / Boleto / Card) ──
-    if (mode === "payment") {
-      if (!value || value <= 0) throw new Error("Valor inválido para cobrança avulsa");
+    // Build payment body
+    const paymentBody: any = {
+      customer: customerId,
+      billingType: billingType || "UNDEFINED",
+      value: config.value,
+      dueDate: dueDateStr,
+      description: config.description,
+      externalReference: JSON.stringify({ user_id: user.id, plan }),
+    };
 
-      const payRes = await fetch(`${ASAAS_API}/payments`, {
-        method: "POST",
-        headers: { "access_token": asaasKey, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customer: customerId,
-          billingType: billingType || "UNDEFINED", // PIX, BOLETO, CREDIT_CARD, UNDEFINED
-          value,
-          dueDate: dueDateStr,
-          description: description || "Cobrança avulsa - Brave Assessor",
-          externalReference: JSON.stringify({ user_id: user.id, type: "one_off" }),
-        }),
-      });
-      const payData = await payRes.json();
-
-      if (payData.errors) {
-        throw new Error(payData.errors[0]?.description || "Erro ao criar cobrança no Asaas");
+    // Credit card transparent checkout
+    if (billingType === "CREDIT_CARD" && creditCard) {
+      paymentBody.creditCard = creditCard;
+      paymentBody.creditCardHolderInfo = creditCardHolderInfo;
+      if (installmentCount && installmentCount > 1) {
+        paymentBody.installmentCount = installmentCount;
+        paymentBody.installmentValue = Math.ceil((config.value / installmentCount) * 100) / 100;
       }
-
-      const paymentUrl = payData.invoiceUrl || payData.bankSlipUrl || `https://www.asaas.com/i/${payData.id}`;
-
-      console.log(`Cobrança avulsa Asaas criada para user=${user.id} payment=${payData.id}`);
-
-      return new Response(JSON.stringify({ url: paymentUrl, paymentId: payData.id }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+      if (remoteIp) paymentBody.remoteIp = remoteIp;
     }
 
-    // ── Subscription ──
-    if (!plan || !PLAN_CONFIG[plan]) {
-      throw new Error(`Plano inválido: ${plan}. Use 'mensal' ou 'anual'.`);
-    }
-
-    const config = PLAN_CONFIG[plan];
-
-    const subRes = await fetch(`${ASAAS_API}/subscriptions`, {
+    // Create payment
+    const payRes = await fetch(`${ASAAS_API}/payments`, {
       method: "POST",
       headers: { "access_token": asaasKey, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        customer: customerId,
-        billingType: "UNDEFINED",
-        value: config.value,
-        cycle: config.cycle,
-        nextDueDate: dueDateStr,
-        description: config.description,
-        externalReference: JSON.stringify({ user_id: user.id, plan }),
-      }),
+      body: JSON.stringify(paymentBody),
     });
-    const subData = await subRes.json();
+    const payData = await payRes.json();
 
-    if (subData.errors) {
-      throw new Error(subData.errors[0]?.description || "Erro ao criar assinatura no Asaas");
+    if (payData.errors) {
+      throw new Error(payData.errors[0]?.description || "Erro ao criar cobrança no Asaas");
     }
 
-    const paymentsRes = await fetch(`${ASAAS_API}/subscriptions/${subData.id}/payments`, {
-      headers: { "access_token": asaasKey },
-    });
-    const paymentsData = await paymentsRes.json();
+    const result: any = {
+      paymentId: payData.id,
+      status: payData.status,
+      billingType: payData.billingType,
+      value: payData.value,
+      invoiceUrl: payData.invoiceUrl,
+      bankSlipUrl: payData.bankSlipUrl,
+    };
 
-    let paymentUrl = "";
-    if (paymentsData.data && paymentsData.data.length > 0) {
-      paymentUrl = paymentsData.data[0].invoiceUrl || paymentsData.data[0].bankSlipUrl || "";
+    // For PIX: fetch QR Code
+    if (billingType === "PIX" || (!billingType && payData.billingType === "PIX")) {
+      const pixRes = await fetch(`${ASAAS_API}/payments/${payData.id}/pixQrCode`, {
+        headers: { "access_token": asaasKey },
+      });
+      const pixData = await pixRes.json();
+      if (pixData.encodedImage) {
+        result.pixQrCode = pixData.encodedImage;
+        result.pixPayload = pixData.payload;
+        result.pixExpirationDate = pixData.expirationDate;
+      }
     }
-    if (!paymentUrl) {
-      const paymentId = paymentsData.data?.[0]?.id;
-      if (paymentId) paymentUrl = `https://www.asaas.com/i/${paymentId}`;
+
+    // For BOLETO: include identificationField (bar code)
+    if (billingType === "BOLETO") {
+      const detailRes = await fetch(`${ASAAS_API}/payments/${payData.id}/identificationField`, {
+        headers: { "access_token": asaasKey },
+      });
+      const detailData = await detailRes.json();
+      if (detailData.identificationField) {
+        result.boletoBarCode = detailData.identificationField;
+        result.boletoUrl = payData.bankSlipUrl;
+      }
     }
 
-    console.log(`Checkout Asaas criado para user=${user.id} plano=${plan} subscription=${subData.id}`);
+    // For CREDIT_CARD: status will be CONFIRMED if approved
+    if (billingType === "CREDIT_CARD") {
+      result.creditCardStatus = payData.status;
+    }
 
-    return new Response(JSON.stringify({ url: paymentUrl, subscriptionId: subData.id }), {
+    console.log(`Transparent checkout: user=${user.id} plan=${plan} type=${billingType} payment=${payData.id} status=${payData.status}`);
+
+    return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
