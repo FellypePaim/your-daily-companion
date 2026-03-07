@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Wallet, Tag, CreditCard, CalendarCheck,
   Target, TrendingUp, Brain, FileText, HeadphonesIcon,
   Settings, LogOut, Sparkles, ShieldCheck, Users, Bell, ArrowLeftRight, Trophy,
-  Star, Flame
+  Flame
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,7 +22,7 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+
 import { useGamification } from "@/hooks/useGamification";
 
 export function AppSidebar() {
@@ -168,52 +168,37 @@ export function AppSidebar() {
         )}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-white/[0.06]">
-        {/* User profile */}
-        <button
-          onClick={() => navigate("/dashboard/settings")}
-          className="flex items-center gap-3 px-3 py-3 group-data-[collapsible=icon]:justify-center w-full text-left rounded-lg hover:bg-white/[0.04] transition-colors"
-        >
-          <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">
-            {displayName.charAt(0).toUpperCase()}
-          </div>
-          <div className="group-data-[collapsible=icon]:hidden min-w-0 flex-1">
-            <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
-            <p className="text-[11px] text-muted-foreground">Ver perfil</p>
-          </div>
-        </button>
-
-        {/* Gamification mini card */}
-        <button
-          onClick={() => navigate("/dashboard/gamification")}
-          className="flex items-center gap-2.5 px-3 py-2 mx-1 mb-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:px-2 border border-white/[0.04]"
-        >
-          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-            <Star className="h-3.5 w-3.5 text-primary" />
-          </div>
-          <div className="group-data-[collapsible=icon]:hidden min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-foreground">Nv. {level || 1}</span>
-              <span className="text-[10px] text-primary font-medium">{levelTitle || "Iniciante"}</span>
+      <SidebarFooter className="border-t border-white/[0.06] p-2">
+        <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
+          {/* Profile + Gamification row */}
+          <button
+            onClick={() => navigate("/dashboard/settings")}
+            className="flex items-center gap-3 px-3 py-3 w-full text-left hover:bg-white/[0.04] transition-colors group-data-[collapsible=icon]:justify-center"
+          >
+            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">
+              {displayName.charAt(0).toUpperCase()}
             </div>
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-[10px] text-muted-foreground">{xp || 0} XP</span>
-              <div className="flex items-center gap-0.5">
-                <Flame className="h-3 w-3 text-orange-500" />
-                <span className="text-[10px] font-semibold text-foreground">{streak || 0}</span>
+            <div className="group-data-[collapsible=icon]:hidden min-w-0 flex-1">
+              <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-[10px] text-primary font-semibold">Nv. {level || 1} · {levelTitle || "Iniciante"}</span>
+                <span className="text-[10px] text-muted-foreground">{xp || 0} XP</span>
+                <div className="flex items-center gap-0.5">
+                  <Flame className="h-3 w-3 text-orange-500" />
+                  <span className="text-[10px] font-semibold text-foreground">{streak || 0}</span>
+                </div>
               </div>
             </div>
-          </div>
-        </button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive"
-          onClick={handleSignOut}
-        >
-          <LogOut className="h-4 w-4 shrink-0" />
-          <span className="group-data-[collapsible=icon]:hidden">Sair</span>
-        </Button>
+          </button>
+          {/* Logout */}
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-3 px-3 py-2.5 w-full text-left text-muted-foreground hover:text-destructive hover:bg-white/[0.04] transition-colors border-t border-white/[0.04] group-data-[collapsible=icon]:justify-center"
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            <span className="text-sm group-data-[collapsible=icon]:hidden">Sair</span>
+          </button>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
