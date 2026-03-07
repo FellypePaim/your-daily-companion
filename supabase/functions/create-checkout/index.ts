@@ -68,13 +68,13 @@ serve(async (req) => {
 
     const user = userData.user;
     const body = await req.json();
-    const { plan, mode, billingType, value, description } = body;
+    const { plan, mode, billingType, value, description, cpfCnpj } = body;
     // mode: "subscription" (default) | "payment" (one-off)
 
     const asaasKey = Deno.env.get("ASAAS_API_KEY");
     if (!asaasKey) throw new Error("ASAAS_API_KEY não configurada");
 
-    const customerId = await findOrCreateCustomer(asaasKey, user);
+    const customerId = await findOrCreateCustomer(asaasKey, user, cpfCnpj);
 
     const nextDueDate = new Date();
     nextDueDate.setDate(nextDueDate.getDate() + 1);

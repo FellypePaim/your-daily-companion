@@ -266,6 +266,20 @@ export default function PlanGate() {
             })}
           </div>
 
+          {/* CPF/CNPJ input */}
+          <div className="rounded-2xl border border-border bg-muted/30 p-5 mb-8">
+            <label className="block text-sm font-medium text-foreground mb-2">
+              CPF ou CNPJ <span className="text-destructive">*</span>
+            </label>
+            <Input
+              placeholder="000.000.000-00"
+              value={cpf}
+              onChange={(e) => setCpf(formatCpf(e.target.value))}
+              className="max-w-xs"
+            />
+            <p className="text-xs text-muted-foreground mt-1">Obrigatório para emissão da cobrança.</p>
+          </div>
+
           {/* CTA WhatsApp geral */}
           <div className="rounded-2xl border border-border bg-muted/30 p-6 text-center">
             <p className="text-sm text-muted-foreground mb-3">
