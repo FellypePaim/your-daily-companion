@@ -96,6 +96,7 @@ export default function Settings() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { xp, level, levelTitle, streak, bestStreak, achievements, unlockedKeys } = useGamification();
 
