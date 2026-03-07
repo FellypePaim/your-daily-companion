@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Download, X, Smartphone } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Download, X } from "lucide-react";
 
 const STORAGE_KEY = "pwa-banner-dismissed";
 
