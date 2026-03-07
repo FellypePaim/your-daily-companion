@@ -73,20 +73,14 @@ serve(async (req) => {
     const user = userData.user;
 
     // Rate limiting: max 5 checkout attempts per user per hour
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const { count: recentAttempts } = await supabaseAdmin
-      .from("transactions")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .gte("created_at", oneHourAgo);
-
-    // Use a simple in-memory approach via checking recent payments in Asaas
-    // Instead, we'll track via a lightweight approach: check profile updated_at
-    const { data: profileCheck } = await supabaseAdmin
-      .from("profiles")
-      .select("updated_at")
-      .eq("id", user.id)
-      .single();
+    const { data: allowed } = await supabaseAdmin.rpc("check_checkout_rate_limit", {
+      _user_id: user.id,
+      _max_attempts: 5,
+      _window_minutes: 60,
+    });
+    if (!allowed) {
+      throw new Error("Muitas tentativas de pagamento. Tente novamente em alguns minutos.");
+    }
 
     const body = await req.json();
     let { plan, billingType, cpfCnpj, creditCard, creditCardHolderInfo, installmentCount, remoteIp } = body;
