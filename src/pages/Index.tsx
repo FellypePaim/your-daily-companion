@@ -576,7 +576,7 @@ const marqueeRow2 = [
 
 function MarqueeChip({ label, color }: { label: string; color: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 shadow-sm whitespace-nowrap flex-shrink-0">
+    <div className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm px-4 py-2.5 shadow-sm whitespace-nowrap flex-shrink-0">
       <div className={`h-3 w-3 rounded-full ${color}`} />
       <span className="text-sm font-medium text-foreground">{label}</span>
     </div>
