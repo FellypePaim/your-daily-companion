@@ -19,8 +19,20 @@ serve(async (req) => {
   );
 
   const asaasKey = Deno.env.get("ASAAS_API_KEY");
+  const webhookToken = Deno.env.get("ASAAS_WEBHOOK_TOKEN");
 
   try {
+    // Validate webhook access token
+    if (webhookToken) {
+      const incomingToken = req.headers.get("asaas-access-token");
+      if (incomingToken !== webhookToken) {
+        console.error("Webhook token inválido ou ausente");
+        return new Response("Unauthorized", { status: 401 });
+      }
+    } else {
+      console.warn("ASAAS_WEBHOOK_TOKEN não configurado — sem validação de token");
+    }
+
     const body = await req.json();
     const event = body.event;
     const payment = body.payment;
