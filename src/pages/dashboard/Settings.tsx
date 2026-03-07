@@ -184,10 +184,12 @@ export default function Settings() {
     setSaving(true);
 
     // Update profile table
+    const cleanCpf = cpfCnpj.replace(/\D/g, "");
     const { error } = await supabase.from("profiles").update({
       display_name: displayName,
       monthly_income: parseFloat(monthlyIncome) || 0,
-    }).eq("id", user.id);
+      cpf_cnpj: cleanCpf || null,
+    } as any).eq("id", user.id);
 
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
