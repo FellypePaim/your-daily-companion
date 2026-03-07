@@ -726,7 +726,7 @@ const comparisonRows = [
 ] as const;
 function Comparison() {
   return (
-    <section className="py-16 md:py-24 bg-secondary/20">
+    <section className="py-16 md:py-24 bg-white/[0.02]">
       <div className="container mx-auto px-4">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="text-center">
           <motion.span variants={fadeUp} className="inline-flex items-center rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium text-foreground">
