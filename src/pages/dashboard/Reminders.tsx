@@ -145,7 +145,7 @@ export default function Reminders() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reminders"] });
       setOpen(false);
-      setForm({ title: "", description: "", event_date: "", event_time: "", notify_minutes_before: "30", recurrence: "none" });
+      setForm({ title: "", description: "", event_date: "", event_time: "", notify_minutes_before: "30", custom_notify_time: "", recurrence: "none" });
       toast.success("Lembrete criado! Você receberá uma notificação no WhatsApp.");
     },
     onError: (err: Error) => toast.error(err.message),
