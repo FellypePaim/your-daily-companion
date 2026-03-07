@@ -27,6 +27,17 @@ const t2 = {
   glowCard: "0 8px 32px rgba(0,0,0,0.4)",
 };
 
+const t3 = {
+  bg: "#0F0F0F", bgCard: "#0F0F0F", bgCardBorder: "transparent",
+  bgCardHover: "#161616", bgSidebar: "#0F0F0F",
+  bgInput: "#1A1A1A", bgBottomNav: "#0F0F0F",
+  text: "#FFFFFF", textSecondary: "#A0A0A0", textMuted: "#666666",
+  accent: "#E8372D", accentSoft: "rgba(232,55,45,0.08)", accentGlow: "rgba(232,55,45,0.20)",
+  border: "transparent", green: "#00D26A", greenSoft: "rgba(0,210,106,0.08)",
+  red: "#FF4D4D", redSoft: "rgba(255,77,77,0.08)", radius: "20px", radiusSm: "12px",
+  blur: "", glowAccent: "", glowCard: "",
+};
+
 /* ── Shared data ── */
 const sidebarItems = [
   { icon: LayoutDashboard, label: "Dashboard", active: true },
