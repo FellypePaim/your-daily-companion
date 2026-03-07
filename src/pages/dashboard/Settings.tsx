@@ -336,6 +336,26 @@ export default function Settings() {
               <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="mt-1" />
             </div>
             <div>
+              <label className="text-xs font-medium text-muted-foreground">CPF ou CNPJ</label>
+              <Input
+                value={cpfCnpj}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "").slice(0, 14);
+                  if (digits.length <= 11) {
+                    setCpfCnpj(digits.replace(/(\d{3})(\d{3})?(\d{3})?(\d{2})?/, (_, a, b, c, d) =>
+                      [a, b, c].filter(Boolean).join(".") + (d ? `-${d}` : "")
+                    ));
+                  } else {
+                    setCpfCnpj(digits.replace(/(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, (_, a, b, c, d, ee) =>
+                      [a, b, c].filter(Boolean).join(".") + (d ? `/${d}` : "") + (ee ? `-${ee}` : "")
+                    ));
+                  }
+                }}
+                placeholder="000.000.000-00"
+                className="mt-1"
+              />
+            </div>
+            <div>
               <label className="text-xs font-medium text-muted-foreground">Renda mensal</label>
               <div className="relative mt-1">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
