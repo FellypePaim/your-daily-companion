@@ -168,7 +168,7 @@ export default function Settings() {
     }
 
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-    const url = urlData.publicUrl;
+    const url = `${urlData.publicUrl}?t=${Date.now()}`;
 
     await supabase.from("profiles").update({ avatar_url: url }).eq("id", user.id);
     setAvatarUrl(url);
