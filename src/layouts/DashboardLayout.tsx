@@ -12,13 +12,17 @@ import PWAInstallBanner from "@/components/PWAInstallBanner";
 import TestPlanBanner from "@/components/TestPlanBanner";
 import { useGamification } from "@/hooks/useGamification";
 import { AchievementPopup, LevelUpPopup } from "@/components/AchievementPopup";
+import { GlassBackground } from "@/components/GlassBackground";
 
 export default function DashboardLayout() {
   const {
     pendingAchievement, clearPendingAchievement,
     pendingLevelUp, clearPendingLevelUp,
   } = useGamification();
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
+  const [dark, setDark] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    return saved ? saved === "dark" : true; // Default to dark for glassmorphism
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
@@ -27,16 +31,19 @@ export default function DashboardLayout() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background relative">
+        {/* Ambient glass orbs */}
+        <GlassBackground />
+
         {/* Sidebar - hidden on mobile */}
-        <div className="hidden md:block">
+        <div className="hidden md:block relative z-10">
           <AppSidebar />
         </div>
 
-        <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center justify-between border-b border-border px-4 bg-background shrink-0">
+        <div className="flex-1 flex flex-col min-w-0 relative z-10">
+          <header className="h-14 flex items-center justify-between px-4 bg-transparent shrink-0">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="hidden md:flex" />
+              <SidebarTrigger className="hidden md:flex text-muted-foreground hover:text-foreground" />
               <img src={braveLogoImg} alt="Brave Assessor" className="md:hidden h-9 w-auto object-contain" />
             </div>
             <Button
@@ -59,7 +66,7 @@ export default function DashboardLayout() {
         {/* Mobile bottom nav */}
         <MobileBottomNav />
 
-        {/* Plan expired modal — shown globally over all dashboard pages */}
+        {/* Plan expired modal */}
         <PlanExpiredModal />
         <AchievementPopup achievement={pendingAchievement} onClose={clearPendingAchievement} />
         <LevelUpPopup level={pendingLevelUp?.level || null} title={pendingLevelUp?.title || ""} onClose={clearPendingLevelUp} />
@@ -67,4 +74,3 @@ export default function DashboardLayout() {
     </SidebarProvider>
   );
 }
-
