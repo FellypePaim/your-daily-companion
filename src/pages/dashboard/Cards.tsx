@@ -36,12 +36,8 @@ export default function Cards() {
   });
 
   const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
-    .toISOString()
-    .slice(0, 10);
-  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-    .toISOString()
-    .slice(0, 10);
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().slice(0, 10);
 
   const { data: cardTransactions = [] } = useQuery({
     queryKey: ["card-transactions", user?.id, monthStart],
@@ -61,9 +57,7 @@ export default function Cards() {
   });
 
   const getCardBill = (cardId: string) =>
-    cardTransactions
-      .filter((t) => t.card_id === cardId && t.type === "expense")
-      .reduce((sum, t) => sum + Number(t.amount), 0);
+    cardTransactions.filter((t) => t.card_id === cardId && t.type === "expense").reduce((sum, t) => sum + Number(t.amount), 0);
 
   const getCardTransactions = (cardId: string) =>
     cardTransactions.filter((t) => t.card_id === cardId);
@@ -75,8 +69,7 @@ export default function Cards() {
       const limit = Number(card.credit_limit) || 0;
       const usagePercent = limit > 0 ? (bill / limit) * 100 : 0;
       const dueDay = card.due_day || 0;
-      const daysUntilDue =
-        dueDay >= today ? dueDay - today : 30 - today + dueDay;
+      const daysUntilDue = dueDay >= today ? dueDay - today : 30 - today + dueDay;
       return usagePercent >= 80 || (dueDay > 0 && daysUntilDue <= 3);
     });
   };
@@ -94,15 +87,12 @@ export default function Cards() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Cartões de Crédito
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Gerencie seus cartões de crédito e controle de fatura
-          </p>
+    <div className="max-w-6xl mx-auto space-y-3 md:space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="text-lg md:text-3xl font-bold text-foreground">Cartões de Crédito</h1>
+          <p className="text-xs md:text-sm text-muted-foreground mt-0.5">Gerencie seus cartões e faturas</p>
         </div>
         <AddCardDialog />
       </div>
@@ -110,17 +100,14 @@ export default function Cards() {
       {/* Alert Banner */}
       {alertCards.length > 0 && (
         <Card className="border-l-4 border-amber-400 bg-amber-50 dark:bg-amber-950/20">
-          <CardContent className="p-4 flex items-start gap-3">
-            <div className="h-9 w-9 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0 mt-0.5">
-              <AlertTriangle className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400" />
+          <CardContent className="p-3 md:p-4 flex items-start gap-2.5 md:gap-3">
+            <div className="h-8 w-8 md:h-9 md:w-9 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0">
+              <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
-                Atenção!
-              </p>
-              <p className="text-xs text-amber-700 dark:text-amber-400/80">
-                {alertCards.length} cartão(ões) com limite alto ou vencimento
-                próximo
+              <p className="text-xs md:text-sm font-semibold text-amber-800 dark:text-amber-300">Atenção!</p>
+              <p className="text-[10px] md:text-xs text-amber-700 dark:text-amber-400/80">
+                {alertCards.length} cartão(ões) com limite alto ou vencimento próximo
               </p>
             </div>
           </CardContent>
@@ -128,15 +115,15 @@ export default function Cards() {
       )}
 
       {cards.length === 0 ? (
-        <Card className="p-6">
-          <div className="text-center py-12 text-muted-foreground">
-            <CreditCard className="h-12 w-12 mx-auto mb-3 opacity-40" />
-            <p className="font-medium">Nenhum cartão cadastrado</p>
-            <p className="text-sm mt-1">Cadastre seu primeiro cartão</p>
+        <Card className="p-4 md:p-6">
+          <div className="text-center py-8 md:py-12 text-muted-foreground">
+            <CreditCard className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-3 opacity-40" />
+            <p className="font-medium text-sm">Nenhum cartão cadastrado</p>
+            <p className="text-xs mt-1">Cadastre seu primeiro cartão</p>
           </div>
         </Card>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           {cards.map((card) => {
             const cardColor = card.color || "hsl(240, 10%, 15%)";
             const bill = getCardBill(card.id);
@@ -149,26 +136,23 @@ export default function Cards() {
             const isExpanded = expandedCard === card.id;
 
             return (
-              <Card
-                key={card.id}
-                className="overflow-hidden border-0 shadow-md"
-              >
+              <Card key={card.id} className="overflow-hidden border-0 shadow-md">
                 {/* Visual Credit Card */}
                 <div
-                  className="p-5 pb-6 text-white relative cursor-pointer group"
+                  className="p-4 pb-5 md:p-5 md:pb-6 text-white relative cursor-pointer group"
                   style={{ background: cardColor }}
                   onClick={() => setEditCard(card)}
                 >
-                  <button className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-white/20">
-                    <Pencil className="h-3.5 w-3.5" />
+                  <button className="absolute top-2.5 right-2.5 md:top-3 md:right-3 opacity-60 md:opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-white/20">
+                    <Pencil className="h-3 w-3 md:h-3.5 md:w-3.5" />
                   </button>
 
-                  <div className="flex items-center gap-2 mb-6">
-                    <div className="h-8 w-11 rounded-md bg-amber-400/90" />
-                    <Wifi className="h-5 w-5 opacity-60 rotate-90" />
+                  <div className="flex items-center gap-2 mb-4 md:mb-6">
+                    <div className="h-7 w-9 md:h-8 md:w-11 rounded-md bg-amber-400/90" />
+                    <Wifi className="h-4 w-4 md:h-5 md:w-5 opacity-60 rotate-90" />
                   </div>
 
-                  <div className="flex items-center gap-4 mb-4 text-sm font-mono tracking-widest opacity-90">
+                  <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4 text-xs md:text-sm font-mono tracking-widest opacity-90">
                     <span>••••</span>
                     <span>••••</span>
                     <span>••••</span>
@@ -177,130 +161,106 @@ export default function Cards() {
 
                   <div className="flex items-end justify-between">
                     <div>
-                      <p className="text-[10px] uppercase tracking-wider opacity-60">
-                        Crédito
-                      </p>
-                      <p className="text-sm font-bold tracking-wide uppercase">
-                        {card.name}
-                      </p>
+                      <p className="text-[9px] md:text-[10px] uppercase tracking-wider opacity-60">Crédito</p>
+                      <p className="text-xs md:text-sm font-bold tracking-wide uppercase">{card.name}</p>
                     </div>
                     {card.brand && (
-                      <p className="text-lg font-bold italic opacity-90">
-                        {card.brand}
-                      </p>
+                      <p className="text-base md:text-lg font-bold italic opacity-90">{card.brand}</p>
                     )}
                   </div>
                 </div>
 
                 {/* Invoice Info */}
-                <CardContent className="p-5 space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                <CardContent className="p-3.5 md:p-5 space-y-3 md:space-y-4">
+                  <div className="grid grid-cols-2 gap-3 md:gap-4">
                     <div>
-                      <p className="text-xs text-muted-foreground">
-                        Fatura atual
-                      </p>
-                      <p className="text-xl font-bold text-foreground">
-                        {fmt(bill)}
-                      </p>
+                      <p className="text-[10px] md:text-xs text-muted-foreground">Fatura atual</p>
+                      <p className="text-base md:text-xl font-bold text-foreground">{fmt(bill)}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-muted-foreground">
-                        Limite disponível
-                      </p>
-                      <p className="text-xl font-bold text-emerald-500">
-                        {fmt(available)}
-                      </p>
+                      <p className="text-[10px] md:text-xs text-muted-foreground">Limite disponível</p>
+                      <p className="text-base md:text-xl font-bold text-emerald-500">{fmt(available)}</p>
                     </div>
                   </div>
 
                   {limit > 0 && (
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       <Progress
                         value={usagePercent}
-                        className="h-2"
-                        style={
-                          {
-                            "--progress-color": isHighUsage
-                              ? "hsl(0, 84%, 60%)"
-                              : "hsl(var(--primary))",
-                          } as React.CSSProperties
-                        }
+                        className="h-1.5 md:h-2"
+                        style={{
+                          "--progress-color": isHighUsage ? "hsl(0, 84%, 60%)" : "hsl(var(--primary))",
+                        } as React.CSSProperties}
                       />
-                      <p className="text-[11px] text-muted-foreground text-right">
-                        {usagePercent.toFixed(0)}% do limite utilizado
+                      <p className="text-[10px] md:text-[11px] text-muted-foreground text-right">
+                        {usagePercent.toFixed(0)}% utilizado
                       </p>
                     </div>
                   )}
 
                   {dueInfo && (
-                    <div className="flex items-center justify-between py-2.5 border-t border-border">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <CalendarDays className="h-4 w-4" />
+                    <div className="flex items-center justify-between py-2 md:py-2.5 border-t border-border">
+                      <div className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-muted-foreground">
+                        <CalendarDays className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         <span>Vence dia {card.due_day}</span>
                       </div>
-                      <span
-                        className={`text-sm font-semibold ${
-                          dueInfo.urgent
-                            ? "text-amber-500"
-                            : "text-muted-foreground"
-                        }`}
-                      >
+                      <span className={`text-xs md:text-sm font-semibold ${dueInfo.urgent ? "text-amber-500" : "text-muted-foreground"}`}>
                         {dueInfo.text}
                       </span>
                     </div>
                   )}
 
                   {isHighUsage && (
-                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30">
-                      <AlertTriangle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-                      <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                    <div className="flex items-center gap-2 px-2.5 md:px-3 py-1.5 md:py-2 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30">
+                      <AlertTriangle className="h-3 w-3 md:h-3.5 md:w-3.5 text-amber-600 dark:text-amber-400" />
+                      <span className="text-[10px] md:text-xs font-medium text-amber-700 dark:text-amber-400">
                         Limite alto ou vencimento próximo
                       </span>
                     </div>
                   )}
 
-                  {/* Pay Invoice + Toggle Transactions */}
                   <div className="flex gap-2 pt-1">
                     {bill > 0 && (
                       <Button
                         variant="outline"
-                        className="flex-1 h-10 rounded-xl gap-2 text-sm font-semibold"
+                        size="sm"
+                        className="flex-1 h-8 md:h-10 rounded-xl gap-1.5 md:gap-2 text-xs md:text-sm font-semibold"
                         onClick={(e) => { e.stopPropagation(); setPayCard({ id: card.id, name: card.name, bill }); }}
                       >
-                        <Banknote className="h-4 w-4" /> Pagar Fatura
+                        <Banknote className="h-3.5 w-3.5 md:h-4 md:w-4" /> Pagar Fatura
                       </Button>
                     )}
                     {transactions.length > 0 && (
                       <Button
                         variant="ghost"
-                        className="flex-1 h-10 rounded-xl gap-2 text-sm font-medium text-muted-foreground"
+                        size="sm"
+                        className="flex-1 h-8 md:h-10 rounded-xl gap-1.5 md:gap-2 text-xs md:text-sm font-medium text-muted-foreground"
                         onClick={(e) => { e.stopPropagation(); setExpandedCard(isExpanded ? null : card.id); }}
                       >
-                        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        {isExpanded ? <ChevronUp className="h-3.5 w-3.5 md:h-4 md:w-4" /> : <ChevronDown className="h-3.5 w-3.5 md:h-4 md:w-4" />}
                         {transactions.length} transaç{transactions.length === 1 ? "ão" : "ões"}
                       </Button>
                     )}
                   </div>
 
-                  {/* Transactions List */}
                   {isExpanded && transactions.length > 0 && (
-                    <div className="border-t border-border pt-3 space-y-1 animate-fade-in">
-                      <p className="text-xs font-semibold text-muted-foreground mb-2">Últimas transações</p>
+                    <div className="border-t border-border pt-2.5 md:pt-3 space-y-1 animate-fade-in">
+                      <p className="text-[10px] md:text-xs font-semibold text-muted-foreground mb-1.5 md:mb-2">Últimas transações</p>
                       {transactions.map((t) => (
                         <button
                           key={t.id}
-                          className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-muted/50 transition-colors text-left group/tx"
+                          className="w-full flex items-center justify-between px-2.5 md:px-3 py-2 md:py-2.5 rounded-xl hover:bg-muted/50 transition-colors text-left group/tx"
                           onClick={(e) => { e.stopPropagation(); setEditTransaction(t); }}
                         >
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-foreground truncate">{t.description}</p>
-                            <p className="text-[11px] text-muted-foreground">{new Date(t.date).toLocaleDateString("pt-BR")}</p>
+                            <p className="text-xs md:text-sm font-medium text-foreground truncate">{t.description}</p>
+                            <p className="text-[10px] md:text-[11px] text-muted-foreground">{new Date(t.date).toLocaleDateString("pt-BR")}</p>
                           </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <span className={`text-sm font-semibold ${t.type === "expense" ? "text-destructive" : "text-emerald-500"}`}>
+                          <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+                            <span className={`text-xs md:text-sm font-semibold ${t.type === "expense" ? "text-destructive" : "text-emerald-500"}`}>
                               {t.type === "expense" ? "-" : "+"}{fmt(Number(t.amount))}
                             </span>
-                            <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover/tx:opacity-100 transition-opacity" />
+                            <Pencil className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground opacity-0 group-hover/tx:opacity-100 transition-opacity" />
                           </div>
                         </button>
                       ))}
@@ -313,18 +273,8 @@ export default function Cards() {
         </div>
       )}
 
-      <EditCardDialog
-        card={editCard}
-        open={!!editCard}
-        onOpenChange={(o) => !o && setEditCard(null)}
-      />
-
-      <EditTransactionDialog
-        transaction={editTransaction}
-        open={!!editTransaction}
-        onOpenChange={(o) => !o && setEditTransaction(null)}
-      />
-
+      <EditCardDialog card={editCard} open={!!editCard} onOpenChange={(o) => !o && setEditCard(null)} />
+      <EditTransactionDialog transaction={editTransaction} open={!!editTransaction} onOpenChange={(o) => !o && setEditTransaction(null)} />
       {payCard && (
         <PayInvoiceDialog
           cardId={payCard.id}

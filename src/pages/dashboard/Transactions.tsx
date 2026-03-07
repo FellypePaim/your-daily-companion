@@ -42,7 +42,6 @@ export default function Transactions() {
     return `${format(startOfMonth(currentDate), "dd/MM/yyyy")} até ${format(endOfMonth(currentDate), "dd/MM/yyyy")}`;
   };
 
-  // Fetch categories for filter
   const { data: categories = [] } = useQuery({
     queryKey: ["categories", user?.id],
     queryFn: async () => {
@@ -52,7 +51,6 @@ export default function Transactions() {
     enabled: !!user,
   });
 
-  // Only non-recurring transactions
   const { data: transactions = [] } = useQuery({
     queryKey: ["day-transactions", user?.id, range.start, range.end],
     queryFn: async () => {
@@ -110,38 +108,38 @@ export default function Transactions() {
   };
 
   const renderTransactionItem = (t: any) => (
-    <div key={t.id} className="flex items-center justify-between py-3 border-b border-border last:border-0 group">
-      <div className="flex items-center gap-3 cursor-pointer" onClick={() => setEditTx(t)}>
-        <div className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 ${
+    <div key={t.id} className="flex items-center justify-between py-2.5 md:py-3 border-b border-border last:border-0 group">
+      <div className="flex items-center gap-2.5 md:gap-3 cursor-pointer min-w-0 flex-1" onClick={() => setEditTx(t)}>
+        <div className={`h-8 w-8 md:h-9 md:w-9 rounded-full flex items-center justify-center shrink-0 ${
           t.type === "income" ? "bg-emerald-100 dark:bg-emerald-900/30" : "bg-rose-100 dark:bg-rose-900/30"
         }`}>
           {t.type === "income" ? (
-            <ArrowUpCircle className="h-4 w-4 text-emerald-500" />
+            <ArrowUpCircle className="h-3.5 w-3.5 md:h-4 md:w-4 text-emerald-500" />
           ) : (
-            <ArrowDownCircle className="h-4 w-4 text-rose-500" />
+            <ArrowDownCircle className="h-3.5 w-3.5 md:h-4 md:w-4 text-rose-500" />
           )}
         </div>
-        <div>
-          <p className="text-sm font-medium text-foreground">{t.description}</p>
-          <p className="text-xs text-muted-foreground">
+        <div className="min-w-0">
+          <p className="text-xs md:text-sm font-medium text-foreground truncate">{t.description}</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground">
             {format(parseISO(t.date), "dd MMM", { locale: ptBR })}
             {(t as any).categories?.name ? ` • ${(t as any).categories.name}` : ""}
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-2">
-        <span className={`text-sm font-bold ${t.type === "income" ? "text-emerald-500" : "text-foreground"}`}>
+      <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+        <span className={`text-xs md:text-sm font-bold ${t.type === "income" ? "text-emerald-500" : "text-foreground"}`}>
           {t.type === "expense" ? "- " : "+ "}R$ {Number(t.amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
         </span>
         {!t.is_paid && (
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30"
+            className="h-7 w-7 md:h-8 md:w-8 rounded-full text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30"
             onClick={(e) => { e.stopPropagation(); handleMarkPaid(t.id); }}
             title="Marcar como paga"
           >
-            <Check className="h-4 w-4" />
+            <Check className="h-3.5 w-3.5 md:h-4 md:w-4" />
           </Button>
         )}
       </div>
@@ -149,69 +147,70 @@ export default function Transactions() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-primary">Transações</h1>
-          <p className="text-muted-foreground text-sm">Suas receitas e despesas do dia a dia</p>
+    <div className="space-y-3 md:space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="text-lg md:text-2xl font-bold text-primary">Transações</h1>
+          <p className="text-muted-foreground text-xs md:text-sm">Receitas e despesas do dia a dia</p>
         </div>
         <AddTransactionDialog
           trigger={
-            <Button className="rounded-full gap-2 bg-primary hover:bg-primary/90">
-              <Plus className="h-4 w-4" /> Nova Transação
+            <Button size="sm" className="rounded-full gap-1.5 bg-primary hover:bg-primary/90 text-xs md:text-sm h-8 md:h-9 px-3 md:px-4">
+              <Plus className="h-3.5 w-3.5 md:h-4 md:w-4" /> <span className="hidden sm:inline">Nova</span> <span className="sm:hidden">+</span>
             </Button>
           }
         />
       </div>
 
       {/* Period selector */}
-      <Card className="p-5">
+      <Card className="p-3 md:p-5">
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="icon" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-9 w-9" onClick={() => setCurrentDate((d) => subMonths(d, 1))}>
-            <ChevronLeft className="h-5 w-5" />
+          <Button variant="ghost" size="icon" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-8 w-8 md:h-9 md:w-9" onClick={() => setCurrentDate((d) => subMonths(d, 1))}>
+            <ChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
           </Button>
           <div className="text-center">
-            <p className="font-bold text-foreground text-lg">{monthCapitalized}</p>
-            <div className="flex items-center gap-2 mt-2 justify-center">
+            <p className="font-bold text-foreground text-sm md:text-lg">{monthCapitalized}</p>
+            <div className="flex items-center gap-1.5 md:gap-2 mt-1.5 md:mt-2 justify-center">
               {(["today", "week", "month"] as Period[]).map((p) => (
-                <Button key={p} variant={period === p ? "default" : "outline"} size="sm" className={`rounded-full text-xs px-4 h-7 ${period === p ? "" : "border-border text-muted-foreground hover:text-foreground"}`} onClick={() => setPeriod(p)}>
-                  {p === "today" ? "Hoje" : p === "week" ? "Essa semana" : "Esse mês"}
+                <Button key={p} variant={period === p ? "default" : "outline"} size="sm" className={`rounded-full text-[10px] md:text-xs px-2.5 md:px-4 h-6 md:h-7 ${period === p ? "" : "border-border text-muted-foreground hover:text-foreground"}`} onClick={() => setPeriod(p)}>
+                  {p === "today" ? "Hoje" : p === "week" ? "Semana" : "Mês"}
                 </Button>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground mt-2">{getDateRangeLabel()}</p>
+            <p className="text-[10px] md:text-xs text-muted-foreground mt-1 md:mt-2">{getDateRangeLabel()}</p>
           </div>
-          <Button variant="ghost" size="icon" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-9 w-9" onClick={() => setCurrentDate((d) => addMonths(d, 1))}>
-            <ChevronRight className="h-5 w-5" />
+          <Button variant="ghost" size="icon" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-8 w-8 md:h-9 md:w-9" onClick={() => setCurrentDate((d) => addMonths(d, 1))}>
+            <ChevronRight className="h-4 w-4 md:h-5 md:w-5" />
           </Button>
         </div>
       </Card>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 md:gap-3">
         {summaryCards.map((item) => (
-          <Card key={item.label} className="p-3 sm:p-4 flex flex-col items-center text-center gap-2">
-            <div className={`h-10 w-10 sm:h-11 sm:w-11 rounded-xl ${item.bg} flex items-center justify-center shrink-0`}>
-              <item.icon className={`h-5 w-5 ${item.text}`} />
+          <Card key={item.label} className="p-2.5 md:p-4 flex flex-col items-center text-center gap-1.5 md:gap-2">
+            <div className={`h-8 w-8 md:h-10 md:w-10 rounded-xl ${item.bg} flex items-center justify-center shrink-0`}>
+              <item.icon className={`h-4 w-4 md:h-5 md:w-5 ${item.text}`} />
             </div>
             <div className="min-w-0">
-              <p className="text-xs text-muted-foreground">{item.label}</p>
-              <p className={`font-bold text-xs sm:text-sm ${item.valueColor} truncate`}>{item.value}</p>
+              <p className="text-[10px] md:text-xs text-muted-foreground">{item.label}</p>
+              <p className={`font-bold text-[11px] md:text-sm ${item.valueColor} truncate`}>{item.value}</p>
             </div>
           </Card>
         ))}
       </div>
 
       {/* Transactions list */}
-      <Card className="p-6">
-        <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
+      <Card className="p-3 md:p-6">
+        <div className="mb-3 md:mb-4 flex items-center justify-between flex-wrap gap-2">
           <div>
-            <h2 className="font-bold text-foreground">Transações do Período</h2>
-            <p className="text-sm text-muted-foreground">{filteredTransactions.length} transações no período</p>
+            <h2 className="font-bold text-foreground text-sm md:text-base">Transações do Período</h2>
+            <p className="text-[10px] md:text-sm text-muted-foreground">{filteredTransactions.length} transações</p>
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-[180px] h-9 rounded-full text-xs">
-              <Filter className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+            <SelectTrigger className="w-[140px] md:w-[180px] h-8 md:h-9 rounded-full text-[10px] md:text-xs">
+              <Filter className="h-3 w-3 md:h-3.5 md:w-3.5 mr-1 text-muted-foreground" />
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
             <SelectContent>
@@ -225,12 +224,12 @@ export default function Transactions() {
         </div>
 
         {filteredTransactions.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-100 to-sky-200 dark:from-blue-950/40 dark:to-sky-950/30 flex items-center justify-center mx-auto mb-4">
-              <DollarSign className="h-8 w-8 text-primary" />
+          <div className="text-center py-8 md:py-12 text-muted-foreground">
+            <div className="h-12 w-12 md:h-16 md:w-16 rounded-2xl bg-gradient-to-br from-blue-100 to-sky-200 dark:from-blue-950/40 dark:to-sky-950/30 flex items-center justify-center mx-auto mb-3 md:mb-4">
+              <DollarSign className="h-6 w-6 md:h-8 md:w-8 text-primary" />
             </div>
-            <p className="font-semibold text-foreground">Nenhuma transação neste período</p>
-            <p className="text-sm mt-1">Adicione suas receitas e despesas do dia a dia.</p>
+            <p className="font-semibold text-foreground text-sm">Nenhuma transação neste período</p>
+            <p className="text-xs mt-1">Adicione suas receitas e despesas.</p>
           </div>
         ) : (
           <div>
