@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Crown, Zap, Star, CheckCircle2, Lock, MessageSquare, Clock, LogOut, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -68,6 +69,7 @@ export default function PlanGate() {
   const { toast } = useToast();
   const [planInfo, setPlanInfo] = useState<{ plan: string; name: string; alreadyUsedTest: boolean } | null>(null);
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [cpf, setCpf] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -110,11 +112,30 @@ export default function PlanGate() {
     }
   };
 
+  const formatCpf = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 14);
+    if (digits.length <= 11) {
+      return digits.replace(/(\d{3})(\d{3})?(\d{3})?(\d{2})?/, (_, a, b, c, d) =>
+        [a, b, c].filter(Boolean).join(".") + (d ? `-${d}` : "")
+      );
+    }
+    return digits.replace(/(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, (_, a, b, c, d, e) =>
+      [a, b, c].filter(Boolean).join(".") + (d ? `/${d}` : "") + (e ? `-${e}` : "")
+    );
+  };
+
+  const cleanCpf = cpf.replace(/\D/g, "");
+  const isCpfValid = cleanCpf.length === 11 || cleanCpf.length === 14;
+
   const handleCheckout = async (plan: "mensal" | "anual") => {
+    if (!isCpfValid) {
+      toast({ title: "CPF/CNPJ inválido", description: "Informe um CPF (11 dígitos) ou CNPJ (14 dígitos) válido.", variant: "destructive" });
+      return;
+    }
     setLoadingPlan(plan);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { plan },
+        body: { plan, cpfCnpj: cleanCpf },
       });
       if (error || !data?.url) throw new Error(error?.message || "Erro ao criar sessão de pagamento");
       window.location.href = data.url;
@@ -243,6 +264,20 @@ export default function PlanGate() {
                 </div>
               );
             })}
+          </div>
+
+          {/* CPF/CNPJ input */}
+          <div className="rounded-2xl border border-border bg-muted/30 p-5 mb-8">
+            <label className="block text-sm font-medium text-foreground mb-2">
+              CPF ou CNPJ <span className="text-destructive">*</span>
+            </label>
+            <Input
+              placeholder="000.000.000-00"
+              value={cpf}
+              onChange={(e) => setCpf(formatCpf(e.target.value))}
+              className="max-w-xs"
+            />
+            <p className="text-xs text-muted-foreground mt-1">Obrigatório para emissão da cobrança.</p>
           </div>
 
           {/* CTA WhatsApp geral */}
