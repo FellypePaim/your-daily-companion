@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -7,6 +6,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+const ASAAS_API = "https://api.asaas.com/v3";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -27,33 +28,61 @@ serve(async (req) => {
     if (userError || !userData.user?.email) throw new Error("Usuário não autenticado");
 
     const user = userData.user;
+    const asaasKey = Deno.env.get("ASAAS_API_KEY");
+    if (!asaasKey) throw new Error("ASAAS_API_KEY não configurada");
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
+    // Find customer by email
+    const searchRes = await fetch(`${ASAAS_API}/customers?email=${encodeURIComponent(user.email!)}`, {
+      headers: { "access_token": asaasKey },
     });
+    const searchData = await searchRes.json();
 
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId: string;
-    if (customers.data.length === 0) {
-      // Create customer if doesn't exist yet
-      const newCustomer = await stripe.customers.create({
-        email: user.email,
-        metadata: { supabase_user_id: user.id },
-      });
-      customerId = newCustomer.id;
-    } else {
-      customerId = customers.data[0].id;
+    if (!searchData.data || searchData.data.length === 0) {
+      throw new Error("Nenhuma conta encontrada no Asaas para este e-mail");
     }
-    const origin = req.headers.get("origin") || "https://brave-assessor.lovable.app";
 
-    const portalSession = await stripe.billingPortal.sessions.create({
-      customer: customerId,
-      return_url: `${origin}/dashboard/settings`,
+    const customerId = searchData.data[0].id;
+
+    // Find active subscriptions for this customer
+    const subsRes = await fetch(`${ASAAS_API}/subscriptions?customer=${customerId}`, {
+      headers: { "access_token": asaasKey },
     });
+    const subsData = await subsRes.json();
 
-    console.log(`Portal criado para user=${user.id}`);
+    // Get the most recent active subscription's payments
+    let portalUrl = "";
+    if (subsData.data && subsData.data.length > 0) {
+      const activeSub = subsData.data.find((s: any) => s.status === "ACTIVE") || subsData.data[0];
+      
+      // Get latest payment for this subscription
+      const paymentsRes = await fetch(`${ASAAS_API}/subscriptions/${activeSub.id}/payments?limit=1&sort=dueDate&order=desc`, {
+        headers: { "access_token": asaasKey },
+      });
+      const paymentsData = await paymentsRes.json();
 
-    return new Response(JSON.stringify({ url: portalSession.url }), {
+      if (paymentsData.data && paymentsData.data.length > 0) {
+        portalUrl = paymentsData.data[0].invoiceUrl || "";
+      }
+    }
+
+    if (!portalUrl) {
+      // Fallback: list recent payments for this customer
+      const paymentsRes = await fetch(`${ASAAS_API}/payments?customer=${customerId}&limit=1&sort=dueDate&order=desc`, {
+        headers: { "access_token": asaasKey },
+      });
+      const paymentsData = await paymentsRes.json();
+      if (paymentsData.data && paymentsData.data.length > 0) {
+        portalUrl = paymentsData.data[0].invoiceUrl || "";
+      }
+    }
+
+    if (!portalUrl) {
+      throw new Error("Nenhuma cobrança encontrada. Entre em contato com o suporte.");
+    }
+
+    console.log(`Portal Asaas para user=${user.id}`);
+
+    return new Response(JSON.stringify({ url: portalUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
