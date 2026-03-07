@@ -123,13 +123,21 @@ export default function Reminders() {
       if (!form.title || !form.event_date || !form.event_time) {
         throw new Error("Preencha todos os campos obrigatórios");
       }
-      const event_at = new Date(`${form.event_date}T${form.event_time}`).toISOString();
+      const eventDate = new Date(`${form.event_date}T${form.event_time}`);
+      let notifyMinutes = Number(form.notify_minutes_before);
+      if (notifyMinutes === -1) {
+        if (!form.custom_notify_time) throw new Error("Informe o horário da notificação");
+        const notifyDate = new Date(`${form.event_date}T${form.custom_notify_time}`);
+        notifyMinutes = Math.max(0, Math.round((eventDate.getTime() - notifyDate.getTime()) / 60000));
+        if (notifyMinutes <= 0) throw new Error("O horário da notificação deve ser antes do evento");
+      }
+      const event_at = eventDate.toISOString();
       const { error } = await supabase.from("reminders").insert({
         user_id: user!.id,
         title: form.title,
         description: form.description || null,
         event_at,
-        notify_minutes_before: Number(form.notify_minutes_before),
+        notify_minutes_before: notifyMinutes,
         recurrence: form.recurrence,
       });
       if (error) throw error;
