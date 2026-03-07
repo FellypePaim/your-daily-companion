@@ -14,6 +14,30 @@ const PLAN_CONFIG: Record<string, { value: number; cycle: string; description: s
   anual: { value: 178.80, cycle: "YEARLY", description: "Brave Assessor - Plano Anual", days: 365 },
 };
 
+async function findOrCreateCustomer(asaasKey: string, user: any): Promise<string> {
+  const searchRes = await fetch(`${ASAAS_API}/customers?email=${encodeURIComponent(user.email!)}`, {
+    headers: { "access_token": asaasKey },
+  });
+  const searchData = await searchRes.json();
+
+  if (searchData.data && searchData.data.length > 0) {
+    return searchData.data[0].id;
+  }
+
+  const createRes = await fetch(`${ASAAS_API}/customers`, {
+    method: "POST",
+    headers: { "access_token": asaasKey, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: user.user_metadata?.display_name || user.email!.split("@")[0],
+      email: user.email,
+      externalReference: user.id,
+    }),
+  });
+  const createData = await createRes.json();
+  if (createData.errors) throw new Error(createData.errors[0]?.description || "Erro ao criar cliente no Asaas");
+  return createData.id;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -33,54 +57,64 @@ serve(async (req) => {
     if (userError || !userData.user?.email) throw new Error("Usuário não autenticado");
 
     const user = userData.user;
-    const { plan } = await req.json();
-
-    if (!plan || !PLAN_CONFIG[plan]) {
-      throw new Error(`Plano inválido: ${plan}. Use 'mensal' ou 'anual'.`);
-    }
+    const body = await req.json();
+    const { plan, mode, billingType, value, description } = body;
+    // mode: "subscription" (default) | "payment" (one-off)
 
     const asaasKey = Deno.env.get("ASAAS_API_KEY");
     if (!asaasKey) throw new Error("ASAAS_API_KEY não configurada");
 
-    const config = PLAN_CONFIG[plan];
+    const customerId = await findOrCreateCustomer(asaasKey, user);
 
-    // 1. Find or create customer in Asaas
-    const searchRes = await fetch(`${ASAAS_API}/customers?email=${encodeURIComponent(user.email!)}`, {
-      headers: { "access_token": asaasKey },
-    });
-    const searchData = await searchRes.json();
-
-    let customerId: string;
-
-    if (searchData.data && searchData.data.length > 0) {
-      customerId = searchData.data[0].id;
-    } else {
-      // Create customer
-      const createRes = await fetch(`${ASAAS_API}/customers`, {
-        method: "POST",
-        headers: { "access_token": asaasKey, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: user.user_metadata?.display_name || user.email!.split("@")[0],
-          email: user.email,
-          externalReference: user.id,
-        }),
-      });
-      const createData = await createRes.json();
-      if (createData.errors) throw new Error(createData.errors[0]?.description || "Erro ao criar cliente no Asaas");
-      customerId = createData.id;
-    }
-
-    // 2. Create subscription in Asaas
     const nextDueDate = new Date();
     nextDueDate.setDate(nextDueDate.getDate() + 1);
     const dueDateStr = nextDueDate.toISOString().slice(0, 10);
+
+    // ── One-off payment (PIX / Boleto / Card) ──
+    if (mode === "payment") {
+      if (!value || value <= 0) throw new Error("Valor inválido para cobrança avulsa");
+
+      const payRes = await fetch(`${ASAAS_API}/payments`, {
+        method: "POST",
+        headers: { "access_token": asaasKey, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: customerId,
+          billingType: billingType || "UNDEFINED", // PIX, BOLETO, CREDIT_CARD, UNDEFINED
+          value,
+          dueDate: dueDateStr,
+          description: description || "Cobrança avulsa - Brave Assessor",
+          externalReference: JSON.stringify({ user_id: user.id, type: "one_off" }),
+        }),
+      });
+      const payData = await payRes.json();
+
+      if (payData.errors) {
+        throw new Error(payData.errors[0]?.description || "Erro ao criar cobrança no Asaas");
+      }
+
+      const paymentUrl = payData.invoiceUrl || payData.bankSlipUrl || `https://www.asaas.com/i/${payData.id}`;
+
+      console.log(`Cobrança avulsa Asaas criada para user=${user.id} payment=${payData.id}`);
+
+      return new Response(JSON.stringify({ url: paymentUrl, paymentId: payData.id }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
+    // ── Subscription ──
+    if (!plan || !PLAN_CONFIG[plan]) {
+      throw new Error(`Plano inválido: ${plan}. Use 'mensal' ou 'anual'.`);
+    }
+
+    const config = PLAN_CONFIG[plan];
 
     const subRes = await fetch(`${ASAAS_API}/subscriptions`, {
       method: "POST",
       headers: { "access_token": asaasKey, "Content-Type": "application/json" },
       body: JSON.stringify({
         customer: customerId,
-        billingType: "UNDEFINED", // Let customer choose (PIX, boleto, credit card)
+        billingType: "UNDEFINED",
         value: config.value,
         cycle: config.cycle,
         nextDueDate: dueDateStr,
@@ -94,8 +128,6 @@ serve(async (req) => {
       throw new Error(subData.errors[0]?.description || "Erro ao criar assinatura no Asaas");
     }
 
-    // 3. Get the first payment's invoice URL
-    // Fetch payments for this subscription
     const paymentsRes = await fetch(`${ASAAS_API}/subscriptions/${subData.id}/payments`, {
       headers: { "access_token": asaasKey },
     });
@@ -105,14 +137,9 @@ serve(async (req) => {
     if (paymentsData.data && paymentsData.data.length > 0) {
       paymentUrl = paymentsData.data[0].invoiceUrl || paymentsData.data[0].bankSlipUrl || "";
     }
-
-    // If no payment URL found, use subscription invoiceUrl  
-    if (!paymentUrl && subData.id) {
-      // Try getting payment link directly
+    if (!paymentUrl) {
       const paymentId = paymentsData.data?.[0]?.id;
-      if (paymentId) {
-        paymentUrl = `https://www.asaas.com/i/${paymentId}`;
-      }
+      if (paymentId) paymentUrl = `https://www.asaas.com/i/${paymentId}`;
     }
 
     console.log(`Checkout Asaas criado para user=${user.id} plano=${plan} subscription=${subData.id}`);
