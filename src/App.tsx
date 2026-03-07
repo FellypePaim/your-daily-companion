@@ -32,7 +32,7 @@ import Reminders from "./pages/dashboard/Reminders";
 import Gamification from "./pages/dashboard/Gamification";
 import NotFound from "./pages/NotFound";
 import Install from "./pages/Install";
-import DesignPreview from "./pages/DesignPreview";
+
 import { PWASplashScreen } from "./components/PWASplashScreen";
 
 const queryClient = new QueryClient();
