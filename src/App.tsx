@@ -47,74 +47,72 @@ function IndexRoute() {
 
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-  <PWASplashScreen>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<IndexRoute />} />
-            <Route path="/install" element={<Install />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+    <PWASplashScreen>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AuthProvider>
+              <Routes>
+                <Route path="/" element={<IndexRoute />} />
+                <Route path="/install" element={<Install />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
 
-            {/* Página de planos — requer login mas não plano ativo */}
-            <Route
-              path="/planos"
-              element={
-                <AuthOnlyRoute>
-                  <PlanGate />
-                </AuthOnlyRoute>
-              }
-            />
+                <Route
+                  path="/planos"
+                  element={
+                    <AuthOnlyRoute>
+                      <PlanGate />
+                    </AuthOnlyRoute>
+                  }
+                />
 
-            {/* Página de confirmação de pagamento */}
-            <Route
-              path="/pagamento-confirmado"
-              element={
-                <AuthOnlyRoute>
-                  <PaymentConfirmed />
-                </AuthOnlyRoute>
-              }
-            />
+                <Route
+                  path="/pagamento-confirmado"
+                  element={
+                    <AuthOnlyRoute>
+                      <PaymentConfirmed />
+                    </AuthOnlyRoute>
+                  }
+                />
 
-            {/* Dashboard — requer login + plano ativo */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Dashboard />} />
-              <Route path="bills" element={<Bills />} />
-              <Route path="transactions" element={<Transactions />} />
-              <Route path="wallets" element={<Wallets />} />
-              <Route path="cards" element={<Cards />} />
-              <Route path="budgets" element={<Categories />} />
-              <Route path="goals" element={<Goals />} />
-              <Route path="reports" element={<Reports />} />
-              <Route path="chat" element={<SupportChat />} />
-              <Route path="family" element={<Family />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="investments" element={<Investments />} />
-              <Route path="behavior" element={<Behavior />} />
-              <Route path="admin/support" element={<AdminSupport />} />
-              <Route path="admin/users" element={<AdminUsers />} />
-              <Route path="brave-ia" element={<NyloChat />} />
-              <Route path="reminders" element={<Reminders />} />
-              <Route path="gamification" element={<Gamification />} />
-            </Route>
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<Dashboard />} />
+                  <Route path="bills" element={<Bills />} />
+                  <Route path="transactions" element={<Transactions />} />
+                  <Route path="wallets" element={<Wallets />} />
+                  <Route path="cards" element={<Cards />} />
+                  <Route path="budgets" element={<Categories />} />
+                  <Route path="goals" element={<Goals />} />
+                  <Route path="reports" element={<Reports />} />
+                  <Route path="chat" element={<SupportChat />} />
+                  <Route path="family" element={<Family />} />
+                  <Route path="settings" element={<Settings />} />
+                  <Route path="investments" element={<Investments />} />
+                  <Route path="behavior" element={<Behavior />} />
+                  <Route path="admin/support" element={<AdminSupport />} />
+                  <Route path="admin/users" element={<AdminUsers />} />
+                  <Route path="brave-ia" element={<NyloChat />} />
+                  <Route path="reminders" element={<Reminders />} />
+                  <Route path="gamification" element={<Gamification />} />
+                </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-  </PWASplashScreen>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </PWASplashScreen>
   </ThemeProvider>
 );
 
