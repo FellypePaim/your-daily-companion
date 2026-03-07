@@ -137,8 +137,9 @@ function Hero({ onOpenAuth }: { onOpenAuth: () => void }) {
 
   return (
     <section ref={heroRef} className="pt-28 pb-12 md:pt-36 md:pb-20 relative overflow-hidden">
-      {/* Subtle pink glow at bottom */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-40 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
+      {/* Ambient glass orbs */}
+      <div className="absolute top-20 left-[10%] w-72 h-72 rounded-full bg-primary/10 blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 right-[10%] w-64 h-64 rounded-full bg-blue-500/8 blur-[80px] pointer-events-none" />
 
       <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
         <motion.div initial="hidden" animate="visible" variants={stagger} style={{ y: heroY, opacity: heroOpacity }}>
