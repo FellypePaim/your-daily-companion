@@ -813,7 +813,13 @@ const Index = () => {
   }
 
   return (
-    <main className="overflow-x-hidden">
+    <main className="overflow-x-hidden bg-background relative">
+      {/* Global ambient orbs for landing */}
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0">
+        <div className="absolute top-[20%] left-[5%] w-96 h-96 rounded-full bg-primary/[0.06] blur-[120px]" />
+        <div className="absolute top-[60%] right-[5%] w-80 h-80 rounded-full bg-blue-500/[0.05] blur-[100px]" />
+        <div className="absolute bottom-[10%] left-[40%] w-72 h-72 rounded-full bg-violet-500/[0.04] blur-[100px]" />
+      </div>
       <Header onOpenAuth={() => setAuthOpen(true)} />
       <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
       <Hero onOpenAuth={() => setAuthOpen(true)} />
