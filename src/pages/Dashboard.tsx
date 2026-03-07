@@ -525,6 +525,9 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
+      {/* Recurrence Suggestions */}
+      <RecurrenceSuggestions />
+
       {/* Alertas */}
       <Card>
         <CardContent className="p-3 md:p-5">
