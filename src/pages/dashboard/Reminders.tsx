@@ -86,6 +86,7 @@ export default function Reminders() {
     event_date: "",
     event_time: "",
     notify_minutes_before: "30",
+    custom_notify_time: "",
     recurrence: "none",
   });
 
