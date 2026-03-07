@@ -46,18 +46,20 @@ export default function DashboardLayout() {
               <SidebarTrigger className="hidden md:flex text-muted-foreground hover:text-foreground" />
               <img src={braveLogoImg} alt="Brave Assessor" className="md:hidden h-9 w-auto object-contain" />
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setDark(!dark)}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
+            <div className="flex items-center gap-2">
+              <PWAInstallBanner />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setDark(!dark)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
+            </div>
           </header>
           <TestPlanBanner />
           <WhatsAppBanner />
-          <PWAInstallBanner />
           <main className="flex-1 p-3 md:p-6 overflow-auto pb-20 md:pb-6">
             <AnimatedOutlet />
           </main>

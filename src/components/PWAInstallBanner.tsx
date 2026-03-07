@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Download, X, Smartphone } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Download, X } from "lucide-react";
 
 const STORAGE_KEY = "pwa-banner-dismissed";
 
@@ -32,50 +31,23 @@ export default function PWAInstallBanner() {
     setDismissed(true);
   };
 
-  // Don't show if already PWA or dismissed
   if (isPWA || dismissed) return null;
 
   return (
-    <div className="mx-4 md:mx-6 mt-3 rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 flex items-center gap-3 relative">
-      {/* Icon */}
-      <div className="h-9 w-9 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-        <Smartphone className="h-4 w-4 text-primary" />
-      </div>
-
-      {/* Text */}
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-foreground leading-tight">
-          Instale o Brave no seu celular
-        </p>
-        <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">
-          Acesse mais rápido, funciona offline e sem precisar abrir o navegador
-        </p>
-      </div>
-
-      {/* CTA */}
-      <Button
-        size="sm"
-        className="shrink-0 rounded-full text-xs px-3 hidden sm:flex gap-1.5"
-        onClick={() => navigate("/install")}
-      >
-        <Download className="h-3.5 w-3.5" />
-        Instalar App
-      </Button>
-      <button
-        onClick={() => navigate("/install")}
-        className="sm:hidden shrink-0 text-xs font-medium text-primary"
-      >
-        Instalar
-      </button>
-
-      {/* Dismiss */}
-      <button
-        onClick={handleDismiss}
-        className="absolute top-2 right-2 text-muted-foreground hover:text-foreground"
+    <button
+      onClick={() => navigate("/install")}
+      className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/20 transition-colors group relative"
+    >
+      <Download className="h-3 w-3" />
+      <span className="hidden sm:inline">Instalar App</span>
+      <span className="sm:hidden">Instalar</span>
+      <span
+        onClick={(e) => { e.stopPropagation(); handleDismiss(); }}
+        className="ml-0.5 text-muted-foreground hover:text-foreground"
         aria-label="Fechar"
       >
-        <X className="h-3.5 w-3.5" />
-      </button>
-    </div>
+        <X className="h-3 w-3" />
+      </span>
+    </button>
   );
 }
