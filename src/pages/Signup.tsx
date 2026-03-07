@@ -73,7 +73,7 @@ export default function Signup() {
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => setDark(!dark)}
+        onClick={() => setTheme(dark ? "light" : "dark")}
         className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
       >
         {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
