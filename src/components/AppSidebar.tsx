@@ -189,9 +189,13 @@ export function AppSidebar() {
             onClick={() => navigate("/dashboard/settings")}
             className="flex items-center gap-3 px-3 py-3 w-full text-left hover:bg-white/[0.04] transition-colors group-data-[collapsible=icon]:justify-center"
           >
-            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">
-              {displayName.charAt(0).toUpperCase()}
-            </div>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={displayName} className="h-9 w-9 rounded-full object-cover shrink-0" />
+            ) : (
+              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">
+                {displayName.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div className="group-data-[collapsible=icon]:hidden min-w-0 flex-1">
               <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
               <div className="flex items-center gap-2 mt-0.5">
