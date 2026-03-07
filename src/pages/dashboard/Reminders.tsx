@@ -383,6 +383,22 @@ export default function Reminders() {
                   ))}
                 </SelectContent>
               </Select>
+              {form.notify_minutes_before === "-1" && (
+                <div className="space-y-1.5 mt-2">
+                  <Label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" /> Horário exato da notificação
+                  </Label>
+                  <Input
+                    type="time"
+                    value={form.custom_notify_time}
+                    onChange={e => setForm(f => ({ ...f, custom_notify_time: e.target.value }))}
+                    placeholder="Ex: 14:00"
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    Será enviado neste horário no mesmo dia do evento
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
