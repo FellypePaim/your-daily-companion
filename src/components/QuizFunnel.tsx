@@ -572,15 +572,15 @@ function QuizResult({ answers, onOpenAuth }: { answers: QuizAnswers; onOpenAuth:
         transition={{ delay: 0.9, duration: 0.5 }}
         className="mt-5 sm:mt-6 flex flex-wrap justify-center gap-2 sm:gap-3"
       >
-        <div className="flex items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1.5 text-[10px] sm:text-xs shadow-sm">
+        <div className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm px-3 py-1.5 text-[10px] sm:text-xs">
           <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
           <span className="font-semibold text-foreground">+2.000 usuários</span>
         </div>
-        <div className="flex items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1.5 text-[10px] sm:text-xs shadow-sm">
+        <div className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm px-3 py-1.5 text-[10px] sm:text-xs">
           <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-500 fill-amber-500" />
           <span className="font-semibold text-foreground">4.9 estrelas</span>
         </div>
-        <div className="flex items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1.5 text-[10px] sm:text-xs shadow-sm">
+        <div className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm px-3 py-1.5 text-[10px] sm:text-xs">
           <Shield className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
           <span className="font-semibold text-foreground">100% seguro</span>
         </div>
