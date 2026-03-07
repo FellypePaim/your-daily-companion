@@ -180,6 +180,7 @@
   pointer-events: none;
   filter: blur(60px);
   z-index: 0;
+  transition: opacity 0.3s;
 }
 .bg-orb-primary {
   background: radial-gradient(circle, hsl(4 80% 54% / 0.08) 0%, transparent 70%);
@@ -189,6 +190,22 @@
 }
 .bg-orb-purple {
   background: radial-gradient(circle, hsl(263 70% 50% / 0.05) 0%, transparent 70%);
+}
+
+/* Light mode: much subtler orbs */
+:root:not(.dark) .bg-orb {
+  opacity: 0.35;
+  filter: blur(80px);
+}
+:root:not(.dark) .bg-orb-primary {
+  background: radial-gradient(circle, hsl(4 80% 70% / 0.06) 0%, transparent 70%);
+}
+:root:not(.dark) .bg-orb-blue {
+  background: radial-gradient(circle, hsl(217 91% 70% / 0.04) 0%, transparent 70%);
+}
+:root:not(.dark) .bg-orb-purple {
+  background: radial-gradient(circle, hsl(263 70% 65% / 0.03) 0%, transparent 70%);
+}
 }
 
 /* Custom scrollbar */
