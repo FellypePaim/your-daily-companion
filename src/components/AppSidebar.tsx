@@ -31,9 +31,7 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const displayName = user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Usuário";
   const { xp, level, levelTitle, streak } = useGamification();
-  const gamification = { xp, level, levelTitle, streak };
 
-  // Count upcoming active reminders for badge
   const { data: reminderCount = 0 } = useQuery({
     queryKey: ["reminders-count", user?.id],
     queryFn: async () => {
@@ -70,7 +68,7 @@ export function AppSidebar() {
 
   const adminItems = [
     { title: "Atendimentos", url: "/dashboard/admin/support", icon: HeadphonesIcon },
-    { title: "Usuários",     url: "/dashboard/admin/users",   icon: Users },
+    { title: "Usuários", url: "/dashboard/admin/users", icon: Users },
   ];
 
   const handleSignOut = async () => {
@@ -79,15 +77,19 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border">
+    <Sidebar collapsible="icon" className="glass-sidebar !border-r-0">
       <SidebarContent>
         {/* Logo */}
         <div className="px-4 pt-5 pb-2 group-data-[collapsible=icon]:px-2">
           <div className="flex items-center gap-3">
-            <img src={braveLogoIcon} alt="Brave Assessor" className="h-14 w-14 rounded-xl object-contain shrink-0" />
+            <img
+              src={braveLogoIcon}
+              alt="Brave Assessor"
+              className="h-14 w-14 rounded-xl object-contain shrink-0"
+            />
             <div className="group-data-[collapsible=icon]:hidden">
-              <span className="font-bold text-lg text-primary leading-none">Brave Assessor</span>
-              <p className="text-xs text-muted-foreground leading-tight mt-0.5">Finanças inteligentes</p>
+              <span className="font-bold text-lg text-primary leading-none">Brave</span>
+              <p className="text-xs text-muted-foreground leading-tight mt-0.5">Assessor Financeiro</p>
             </div>
           </div>
         </div>
@@ -96,13 +98,13 @@ export function AppSidebar() {
         <div className="px-3 py-2 group-data-[collapsible=icon]:px-1.5">
           <NavLink
             to="/dashboard/brave-ia"
-            className="flex items-center gap-3 rounded-xl bg-primary px-4 py-3 text-primary-foreground hover:brightness-110 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2"
-            activeClassName="ring-2 ring-primary/30"
+            className="flex items-center gap-3 rounded-xl bg-primary/10 border border-primary/15 px-4 py-3 text-primary hover:bg-primary/15 transition-all group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2 glow-primary-sm"
+            activeClassName="bg-primary text-primary-foreground glow-primary"
           >
             <Sparkles className="h-5 w-5 shrink-0" />
             <div className="group-data-[collapsible=icon]:hidden">
               <span className="font-semibold text-sm leading-none">Brave IA</span>
-              <p className="text-[11px] opacity-80 leading-tight">Seu assessor</p>
+              <p className="text-[11px] opacity-70 leading-tight">Seu assessor</p>
             </div>
           </NavLink>
         </div>
@@ -117,13 +119,13 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end={item.url === "/dashboard"}
-                      className="flex items-center gap-3 text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 transition-colors"
-                      activeClassName="text-primary font-medium bg-transparent"
+                      className="flex items-center gap-3 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-colors"
+                      activeClassName="text-primary font-medium bg-white/[0.06]"
                     >
                       <div className="relative shrink-0">
                         <item.icon className="h-4 w-4" />
                         {item.badge > 0 && (
-                          <span className="absolute -top-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center leading-none">
+                          <span className="absolute -top-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center leading-none glow-primary-sm">
                             {item.badge > 9 ? "9+" : item.badge}
                           </span>
                         )}
@@ -151,8 +153,8 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild>
                       <NavLink
                         to={item.url}
-                        className="flex items-center gap-3 text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 transition-colors"
-                        activeClassName="text-primary font-medium bg-transparent"
+                        className="flex items-center gap-3 text-muted-foreground hover:text-foreground hover:bg-white/[0.04] transition-colors"
+                        activeClassName="text-primary font-medium bg-white/[0.06]"
                       >
                         <item.icon className="h-4 w-4 shrink-0" />
                         <span>{item.title}</span>
@@ -166,11 +168,11 @@ export function AppSidebar() {
         )}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-border">
-        {/* User profile + gamification */}
+      <SidebarFooter className="border-t border-white/[0.06]">
+        {/* User profile */}
         <button
           onClick={() => navigate("/dashboard/settings")}
-          className="flex items-center gap-3 px-3 py-3 group-data-[collapsible=icon]:justify-center w-full text-left rounded-lg hover:bg-sidebar-accent/50 transition-colors"
+          className="flex items-center gap-3 px-3 py-3 group-data-[collapsible=icon]:justify-center w-full text-left rounded-lg hover:bg-white/[0.04] transition-colors"
         >
           <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold shrink-0">
             {displayName.charAt(0).toUpperCase()}
@@ -184,21 +186,21 @@ export function AppSidebar() {
         {/* Gamification mini card */}
         <button
           onClick={() => navigate("/dashboard/gamification")}
-          className="flex items-center gap-2.5 px-3 py-2 mx-1 mb-1 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:px-2"
+          className="flex items-center gap-2.5 px-3 py-2 mx-1 mb-1 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:px-2 border border-white/[0.04]"
         >
           <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
             <Star className="h-3.5 w-3.5 text-primary" />
           </div>
           <div className="group-data-[collapsible=icon]:hidden min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-foreground">Nv. {gamification?.level || 1}</span>
-              <span className="text-[10px] text-primary font-medium">{gamification?.levelTitle || "Iniciante"}</span>
+              <span className="text-xs font-bold text-foreground">Nv. {level || 1}</span>
+              <span className="text-[10px] text-primary font-medium">{levelTitle || "Iniciante"}</span>
             </div>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-[10px] text-muted-foreground">{gamification?.xp || 0} XP</span>
+              <span className="text-[10px] text-muted-foreground">{xp || 0} XP</span>
               <div className="flex items-center gap-0.5">
                 <Flame className="h-3 w-3 text-orange-500" />
-                <span className="text-[10px] font-semibold text-foreground">{gamification?.streak || 0}</span>
+                <span className="text-[10px] font-semibold text-foreground">{streak || 0}</span>
               </div>
             </div>
           </div>
