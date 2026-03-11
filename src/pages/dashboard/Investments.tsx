@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, TrendingUp, DollarSign, BarChart3, RefreshCw, Bitcoin, Landmark, BarChart2, Receipt } from "lucide-react";
+import { AddInvestmentDialog } from "@/components/AddInvestmentDialog";
 
 interface MarketItem {
   label: string;
