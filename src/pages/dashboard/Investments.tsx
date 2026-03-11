@@ -91,14 +91,16 @@ export default function Investments() {
   const totalReturn = totalCurrent - totalInvested;
   const returnPct = totalInvested > 0 ? (totalReturn / totalInvested) * 100 : 0;
 
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("investments").delete().eq("id", id);
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    const { error } = await supabase.from("investments").delete().eq("id", deleteId);
     if (error) {
       toast.error("Erro ao excluir", { description: error.message });
     } else {
       toast.success("Investimento removido");
       refetchInvestments();
     }
+    setDeleteId(null);
   };
 
   return (
