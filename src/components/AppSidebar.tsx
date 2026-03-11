@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { useGamification } from "@/hooks/useGamification";
+import { useUnreadSupport } from "@/hooks/useUnreadSupport";
 
 export function AppSidebar() {
   const { signOut, user } = useAuth();
