@@ -67,10 +67,7 @@ export default function Investments() {
           </div>
           <p className="text-muted-foreground text-sm">Acompanhe seu patrimônio e o mercado em tempo real</p>
         </div>
-        <Button className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5">
-          <Plus className="h-4 w-4" />
-          Novo Investimento
-        </Button>
+        <AddInvestmentDialog />
       </div>
 
       {/* Market Ticker */}
