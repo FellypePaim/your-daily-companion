@@ -13,6 +13,7 @@ import { format, startOfMonth, endOfMonth, addMonths, subMonths, startOfWeek, en
 import { ptBR } from "date-fns/locale";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { EditTransactionDialog } from "@/components/EditTransactionDialog";
+import { ImportExtractDialog } from "@/components/ImportExtractDialog";
 import { useToast } from "@/hooks/use-toast";
 
 type Period = "today" | "week" | "month";
@@ -154,13 +155,16 @@ export default function Transactions() {
           <h1 className="text-lg md:text-2xl font-bold text-primary">Transações</h1>
           <p className="text-muted-foreground text-xs md:text-sm">Receitas e despesas do dia a dia</p>
         </div>
-        <AddTransactionDialog
-          trigger={
-            <Button size="sm" className="rounded-full gap-1.5 bg-primary hover:bg-primary/90 text-xs md:text-sm h-8 md:h-9 px-3 md:px-4">
-              <Plus className="h-3.5 w-3.5 md:h-4 md:w-4" /> <span className="hidden sm:inline">Nova</span> <span className="sm:hidden">+</span>
-            </Button>
-          }
-        />
+        <div className="flex items-center gap-2">
+          <ImportExtractDialog />
+          <AddTransactionDialog
+            trigger={
+              <Button size="sm" className="rounded-full gap-1.5 bg-primary hover:bg-primary/90 text-xs md:text-sm h-8 md:h-9 px-3 md:px-4">
+                <Plus className="h-3.5 w-3.5 md:h-4 md:w-4" /> <span className="hidden sm:inline">Nova</span> <span className="sm:hidden">+</span>
+              </Button>
+            }
+          />
+        </div>
       </div>
 
       {/* Period selector */}

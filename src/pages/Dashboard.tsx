@@ -17,6 +17,8 @@ import { OnboardingTour } from "@/components/OnboardingTour";
 import { AnimatePresence } from "framer-motion";
 import { useGamification } from "@/hooks/useGamification";
 import RecurrenceSuggestions from "@/components/RecurrenceSuggestions";
+import { BudgetRuleWidget } from "@/components/BudgetRuleWidget";
+import { SpendingForecast } from "@/components/SpendingForecast";
 
 type Period = "today" | "week" | "month";
 
@@ -537,6 +539,15 @@ export default function Dashboard() {
           )}
         </CardContent>
       </Card>
+
+      {/* 50/30/20 Rule Widget */}
+      <BudgetRuleWidget
+        income={receivedIncome}
+        expenses={catEntries.map(([category, amount]) => ({ category, amount }))}
+      />
+
+      {/* AI Spending Forecast */}
+      <SpendingForecast />
 
       {/* Recurrence Suggestions */}
       <RecurrenceSuggestions />
