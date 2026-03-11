@@ -52,6 +52,9 @@ export default function CheckoutDialog({
   const [cardPostalCode, setCardPostalCode] = useState("");
   const [cardAddressNumber, setCardAddressNumber] = useState("");
 
+  // CPF for PIX/Boleto
+  const [cpfCnpj, setCpfCnpj] = useState("");
+
   // Payment tracking
   const [paymentId, setPaymentId] = useState<string | null>(null);
 
