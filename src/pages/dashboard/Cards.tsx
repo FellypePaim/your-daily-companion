@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,8 +12,6 @@ import { PayInvoiceDialog } from "@/components/PayInvoiceDialog";
 import { ConfirmDeleteDialog } from "@/components/ConfirmDeleteDialog";
 import { CardSkeleton } from "@/components/ui/skeletons";
 import { Progress } from "@/components/ui/progress";
-import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const fmt = (v: number) =>
