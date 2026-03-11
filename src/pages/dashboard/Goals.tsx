@@ -9,6 +9,7 @@ import { Plus, Target, Calculator, AlertCircle, Pencil, PlusCircle, Check, X } f
 import { useToast } from "@/hooks/use-toast";
 import { addMonths, format } from "date-fns";
 import { EditGoalDialog } from "@/components/EditGoalDialog";
+import { GoalSkeleton } from "@/components/ui/skeletons";
 
 export default function Goals() {
   const { user } = useAuth();
