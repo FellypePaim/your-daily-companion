@@ -83,8 +83,8 @@ export function AppSidebar() {
   ];
 
   const adminItems = [
-    { title: "Atendimentos", url: "/dashboard/admin/support", icon: HeadphonesIcon },
-    { title: "Usuários", url: "/dashboard/admin/users", icon: Users },
+    { title: "Atendimentos", url: "/dashboard/admin/support", icon: HeadphonesIcon, badge: isAdmin ? unreadSupport : 0 },
+    { title: "Usuários", url: "/dashboard/admin/users", icon: Users, badge: 0 },
   ];
 
   const handleSignOut = async () => {
