@@ -17,6 +17,8 @@ import { OnboardingTour } from "@/components/OnboardingTour";
 import { AnimatePresence } from "framer-motion";
 import { useGamification } from "@/hooks/useGamification";
 import RecurrenceSuggestions from "@/components/RecurrenceSuggestions";
+import { BudgetRuleWidget } from "@/components/BudgetRuleWidget";
+import { SpendingForecast } from "@/components/SpendingForecast";
 
 type Period = "today" | "week" | "month";
 
