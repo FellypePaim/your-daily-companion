@@ -62,6 +62,7 @@ export default function AdminUsers() {
   const [editRole, setEditRole] = useState("");
   const [editIncome, setEditIncome] = useState("");
   const [editEmail, setEditEmail] = useState("");
+  const [editCpf, setEditCpf] = useState("");
   const [editPassword, setEditPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -175,7 +176,7 @@ export default function AdminUsers() {
     setEditPassword("");
     setShowPassword(false);
 
-    // Fetch email via edge function (admin API)
+    // Fetch email + cpf via edge function (admin API)
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.access_token) {
       const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
@@ -193,8 +194,10 @@ export default function AdminUsers() {
         );
         const json = await res.json();
         setEditEmail(json.user?.email || "");
+        setEditCpf(json.user?.cpf_cnpj || "");
       } catch {
         setEditEmail("");
+        setEditCpf("");
       }
     }
   };
@@ -238,6 +241,7 @@ export default function AdminUsers() {
         subscription_expires_at: expiresAt,
         display_name: editName,
         monthly_income: parseFloat(editIncome) || 0,
+        cpf_cnpj: editCpf.replace(/\D/g, "") || null,
       }),
     });
     const planJson = await planRes.json();
@@ -616,6 +620,27 @@ export default function AdminUsers() {
                 <div>
                   <Label className="text-xs">Nome completo</Label>
                   <Input value={editName} onChange={e => setEditName(e.target.value)} className="mt-1" />
+                </div>
+
+                <div>
+                  <Label className="text-xs">CPF ou CNPJ</Label>
+                  <Input
+                    value={editCpf}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "").slice(0, 14);
+                      if (digits.length <= 11) {
+                        setEditCpf(digits.replace(/(\d{3})(\d{3})?(\d{3})?(\d{2})?/, (_, a, b, c, d) =>
+                          [a, b, c].filter(Boolean).join(".") + (d ? `-${d}` : "")
+                        ));
+                      } else {
+                        setEditCpf(digits.replace(/(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, (_, a, b, c, d, ee) =>
+                          [a, b, c].filter(Boolean).join(".") + (d ? `/${d}` : "") + (ee ? `-${ee}` : "")
+                        ));
+                      }
+                    }}
+                    placeholder="000.000.000-00"
+                    className="mt-1"
+                  />
                 </div>
 
                 <div>

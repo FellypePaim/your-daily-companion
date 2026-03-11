@@ -81,6 +81,7 @@ Deno.serve(async (req) => {
       subscription_expires_at,
       display_name,
       monthly_income,
+      cpf_cnpj,
     } = await req.json();
 
     if (!userId) {
@@ -96,7 +97,7 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // fetchOnly mode — just return the user's current email
+    // fetchOnly mode — return the user's current email + cpf
     if (fetchOnly) {
       const { data, error } = await adminClient.auth.admin.getUserById(userId);
       if (error) {
@@ -105,8 +106,14 @@ Deno.serve(async (req) => {
           headers: corsHeaders,
         });
       }
+      // Also fetch cpf_cnpj from profile
+      const { data: profileData } = await adminClient
+        .from("profiles")
+        .select("cpf_cnpj")
+        .eq("id", userId)
+        .maybeSingle();
       return new Response(
-        JSON.stringify({ success: true, user: { id: data.user.id, email: data.user.email } }),
+        JSON.stringify({ success: true, user: { id: data.user.id, email: data.user.email, cpf_cnpj: profileData?.cpf_cnpj || null } }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -194,6 +201,7 @@ Deno.serve(async (req) => {
     if (subscription_expires_at !== undefined) profileFieldsToUpdate.subscription_expires_at = subscription_expires_at ?? null;
     if (display_name !== undefined) profileFieldsToUpdate.display_name = display_name;
     if (monthly_income !== undefined) profileFieldsToUpdate.monthly_income = monthly_income;
+    if (cpf_cnpj !== undefined) profileFieldsToUpdate.cpf_cnpj = cpf_cnpj;
 
     if (Object.keys(profileFieldsToUpdate).length > 0) {
       const { error: profileErr } = await adminClient
