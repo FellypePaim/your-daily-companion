@@ -328,9 +328,20 @@ export default function CheckoutDialog({
             {/* Boleto Tab */}
             <TabsContent value="boleto" className="mt-4 space-y-4">
               {status === "idle" && (
-                <Button onClick={handleBoletoCheckout} className="w-full">
-                  <FileText className="h-4 w-4 mr-2" /> Gerar Boleto
-                </Button>
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-xs">CPF/CNPJ *</Label>
+                    <Input
+                      placeholder="000.000.000-00"
+                      value={cpfCnpj}
+                      onChange={(e) => setCpfCnpj(e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                  <Button onClick={handleBoletoCheckout} className="w-full">
+                    <FileText className="h-4 w-4 mr-2" /> Gerar Boleto
+                  </Button>
+                </div>
               )}
               {status === "loading" && (
                 <div className="flex items-center justify-center py-8">
