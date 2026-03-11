@@ -203,9 +203,9 @@ export function MobileBottomNav() {
           >
             <div className="flex items-center justify-center w-10 h-8 rounded-full relative">
               <MoreHorizontal className="h-5 w-5" />
-              {reminderCount > 0 && (
+              {(reminderCount > 0 || unreadSupport > 0) && (
                 <span className="absolute top-0.5 right-0.5 h-3 w-3 rounded-full bg-primary text-primary-foreground text-[8px] font-bold flex items-center justify-center leading-none">
-                  {reminderCount > 9 ? "9+" : reminderCount}
+                  {(reminderCount + unreadSupport) > 9 ? "9+" : (reminderCount + unreadSupport)}
                 </span>
               )}
             </div>
