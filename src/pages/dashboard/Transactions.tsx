@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCategories } from "@/hooks/useSharedQueries";
 import {
   Plus, ChevronLeft, ChevronRight, DollarSign, Pencil, Clock,
   CheckCircle2, AlertTriangle, Check, ArrowUpCircle, ArrowDownCircle, Filter,
@@ -15,6 +16,7 @@ import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { EditTransactionDialog } from "@/components/EditTransactionDialog";
 import { ImportExtractDialog } from "@/components/ImportExtractDialog";
 import { useToast } from "@/hooks/use-toast";
+import { ListSkeleton } from "@/components/ui/skeletons";
 
 type Period = "today" | "week" | "month";
 
