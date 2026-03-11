@@ -46,6 +46,7 @@ const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", curren
 export default function Investments() {
   const { user } = useAuth();
   const [secondsAgo, setSecondsAgo] = useState(0);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const { data: marketResult, refetch, isFetching: isFetchingMarket } = useQuery({
     queryKey: ["market-data"],
