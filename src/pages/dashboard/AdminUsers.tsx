@@ -241,6 +241,7 @@ export default function AdminUsers() {
         subscription_expires_at: expiresAt,
         display_name: editName,
         monthly_income: parseFloat(editIncome) || 0,
+        cpf_cnpj: editCpf.replace(/\D/g, "") || null,
       }),
     });
     const planJson = await planRes.json();
