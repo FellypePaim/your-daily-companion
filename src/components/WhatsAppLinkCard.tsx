@@ -18,7 +18,6 @@ const NOX_PHONE_DISPLAY = "(37) 9 9938-5148";
 
 export default function WhatsAppLinkCard({ userId }: WhatsAppLinkCardProps) {
   const { toast } = useToast();
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [verificationCode, setVerificationCode] = useState<string | null>(null);
   const [linkedPhone, setLinkedPhone] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
@@ -39,7 +38,6 @@ export default function WhatsAppLinkCard({ userId }: WhatsAppLinkCardProps) {
         setLinkedPhone(data.phone_number);
         setIsVerified(data.verified ?? false);
         setVerificationCode(data.verification_code);
-        if (data.phone_number) setPhoneNumber(data.phone_number);
       }
     };
     fetchLink();
