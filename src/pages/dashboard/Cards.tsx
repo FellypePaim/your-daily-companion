@@ -4,12 +4,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CreditCard, Pencil, AlertTriangle, CalendarDays, Wifi, ChevronDown, ChevronUp, Banknote } from "lucide-react";
+import { CreditCard, Pencil, AlertTriangle, CalendarDays, Wifi, ChevronDown, ChevronUp, Banknote, Trash2 } from "lucide-react";
 import { AddCardDialog } from "@/components/AddCardDialog";
 import { EditCardDialog } from "@/components/EditCardDialog";
 import { EditTransactionDialog } from "@/components/EditTransactionDialog";
 import { PayInvoiceDialog } from "@/components/PayInvoiceDialog";
+import { ConfirmDeleteDialog } from "@/components/ConfirmDeleteDialog";
+import { CardSkeleton } from "@/components/ui/skeletons";
 import { Progress } from "@/components/ui/progress";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const fmt = (v: number) =>
   v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
