@@ -111,6 +111,11 @@ export function MobileBottomNav() {
                           {reminderCount > 9 ? "9+" : reminderCount}
                         </span>
                       )}
+                      {(item as any).supportBadge && unreadSupport > 0 && (
+                        <span className="absolute -top-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center leading-none">
+                          {unreadSupport > 9 ? "9+" : unreadSupport}
+                        </span>
+                      )}
                     </div>
                     <span className="text-[10px] font-medium leading-tight text-center">{item.label}</span>
                   </NavLink>
