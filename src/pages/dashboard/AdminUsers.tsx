@@ -623,6 +623,27 @@ export default function AdminUsers() {
                 </div>
 
                 <div>
+                  <Label className="text-xs">CPF ou CNPJ</Label>
+                  <Input
+                    value={editCpf}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "").slice(0, 14);
+                      if (digits.length <= 11) {
+                        setEditCpf(digits.replace(/(\d{3})(\d{3})?(\d{3})?(\d{2})?/, (_, a, b, c, d) =>
+                          [a, b, c].filter(Boolean).join(".") + (d ? `-${d}` : "")
+                        ));
+                      } else {
+                        setEditCpf(digits.replace(/(\d{2})(\d{3})?(\d{3})?(\d{4})?(\d{2})?/, (_, a, b, c, d, ee) =>
+                          [a, b, c].filter(Boolean).join(".") + (d ? `/${d}` : "") + (ee ? `-${ee}` : "")
+                        ));
+                      }
+                    }}
+                    placeholder="000.000.000-00"
+                    className="mt-1"
+                  />
+                </div>
+
+                <div>
                   <Label className="text-xs">Renda mensal (R$)</Label>
                   <Input type="number" value={editIncome} onChange={e => setEditIncome(e.target.value)} className="mt-1" placeholder="0.00" />
                 </div>

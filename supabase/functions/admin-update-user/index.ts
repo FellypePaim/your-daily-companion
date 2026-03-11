@@ -201,6 +201,7 @@ Deno.serve(async (req) => {
     if (subscription_expires_at !== undefined) profileFieldsToUpdate.subscription_expires_at = subscription_expires_at ?? null;
     if (display_name !== undefined) profileFieldsToUpdate.display_name = display_name;
     if (monthly_income !== undefined) profileFieldsToUpdate.monthly_income = monthly_income;
+    if (cpf_cnpj !== undefined) profileFieldsToUpdate.cpf_cnpj = cpf_cnpj;
 
     if (Object.keys(profileFieldsToUpdate).length > 0) {
       const { error: profileErr } = await adminClient
