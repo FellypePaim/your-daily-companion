@@ -62,6 +62,7 @@ export default function AdminUsers() {
   const [editRole, setEditRole] = useState("");
   const [editIncome, setEditIncome] = useState("");
   const [editEmail, setEditEmail] = useState("");
+  const [editCpf, setEditCpf] = useState("");
   const [editPassword, setEditPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [saving, setSaving] = useState(false);
