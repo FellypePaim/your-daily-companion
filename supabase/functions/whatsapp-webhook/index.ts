@@ -102,12 +102,12 @@ serve(async (req) => {
 
     // Check verification code (text only) — match code anywhere in the message
     if (hasText) {
-      const codeMatch = messageText.match(/(?:NOX|BRAVE)-(\d{6})/i);
+      const codeMatch = messageText.match(/(?:NOX|BRAVE)-([A-Z0-9]{4,6})/i);
       if (codeMatch) {
         // Try both prefixes to handle already-stored NOX- codes and new BRAVE- codes
-        const digits = codeMatch[1];
-        const bravCode = `BRAVE-${digits}`;
-        const noxCode = `NOX-${digits}`;
+        const codeValue = codeMatch[1].toUpperCase();
+        const bravCode = `BRAVE-${codeValue}`;
+        const noxCode = `NOX-${codeValue}`;
 
         let link = null;
         // First try BRAVE- prefix (new codes)

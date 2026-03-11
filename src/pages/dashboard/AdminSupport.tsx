@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Send, MessageCircle, User, ImageIcon, X } from "lucide-react";
+import { Send, MessageCircle, User, ImageIcon, X, CheckCircle2, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useUnreadSupport } from "@/hooks/useUnreadSupport";
 
 interface Conversation {
   id: string;
@@ -31,6 +32,7 @@ interface Message {
 export default function AdminSupport() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { refresh: refreshUnread } = useUnreadSupport();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConv, setActiveConv] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -40,6 +42,7 @@ export default function AdminSupport() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [unreadConvs, setUnreadConvs] = useState<Set<string>>(new Set());
+  const [statusFilter, setStatusFilter] = useState<"open" | "closed">("open");
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -102,11 +105,13 @@ export default function AdminSupport() {
     return () => { supabase.removeChannel(channel); };
   }, [user, activeConv, profiles, toast]);
 
-  // Fetch messages for active conversation
+  // Fetch messages for active conversation + refresh global unread badge
   useEffect(() => {
     if (!activeConv) { setMessages([]); return; }
 
     setUnreadConvs((prev) => { const n = new Set(prev); n.delete(activeConv); return n; });
+    // Refresh sidebar/nav unread badge
+    refreshUnread();
 
     const fetchMessages = async () => {
       const { data } = await supabase
@@ -138,6 +143,9 @@ export default function AdminSupport() {
   }, [messages]);
 
   const activeConvData = conversations.find((c) => c.id === activeConv);
+  const filteredConversations = conversations.filter((c) =>
+    statusFilter === "open" ? c.status === "open" : c.status === "closed"
+  );
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -164,6 +172,38 @@ export default function AdminSupport() {
   const getSenderName = (senderId: string) => {
     if (senderId === user?.id) return "Suporte";
     return profiles[senderId] || "Usuário";
+  };
+
+  const handleResolve = async () => {
+    if (!activeConv) return;
+    const { error } = await supabase
+      .from("support_conversations")
+      .update({ status: "closed" })
+      .eq("id", activeConv);
+    if (error) {
+      toast({ title: "Erro", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Conversa resolvida" });
+      setConversations((prev) =>
+        prev.map((c) => c.id === activeConv ? { ...c, status: "closed" } : c)
+      );
+    }
+  };
+
+  const handleReopen = async () => {
+    if (!activeConv) return;
+    const { error } = await supabase
+      .from("support_conversations")
+      .update({ status: "open" })
+      .eq("id", activeConv);
+    if (error) {
+      toast({ title: "Erro", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Conversa reaberta" });
+      setConversations((prev) =>
+        prev.map((c) => c.id === activeConv ? { ...c, status: "open" } : c)
+      );
+    }
   };
 
   const sendMessage = async () => {
@@ -193,12 +233,32 @@ export default function AdminSupport() {
     <div className="flex h-[calc(100vh-8rem)] gap-4">
       {/* Conversations list */}
       <Card className="w-80 shrink-0 flex flex-col overflow-hidden">
-        <div className="p-3 border-b border-border">
-          <h3 className="font-semibold text-sm text-foreground">Atendimentos</h3>
-          <p className="text-xs text-muted-foreground">{conversations.length} conversa(s)</p>
+        <div className="p-3 border-b border-border space-y-2">
+          <div>
+            <h3 className="font-semibold text-sm text-foreground">Atendimentos</h3>
+            <p className="text-xs text-muted-foreground">{filteredConversations.length} conversa(s)</p>
+          </div>
+          <div className="flex gap-1">
+            <Button
+              variant={statusFilter === "open" ? "default" : "outline"}
+              size="sm"
+              className="flex-1 h-7 text-xs"
+              onClick={() => setStatusFilter("open")}
+            >
+              Abertas
+            </Button>
+            <Button
+              variant={statusFilter === "closed" ? "default" : "outline"}
+              size="sm"
+              className="flex-1 h-7 text-xs"
+              onClick={() => setStatusFilter("closed")}
+            >
+              Resolvidas
+            </Button>
+          </div>
         </div>
         <div className="flex-1 overflow-auto">
-          {conversations.map((c) => (
+          {filteredConversations.map((c) => (
             <button
               key={c.id}
               onClick={() => setActiveConv(c.id)}
@@ -214,7 +274,7 @@ export default function AdminSupport() {
                       {profiles[c.user_id] || "Usuário"}
                     </p>
                     <Badge variant={c.status === "open" ? "default" : "secondary"} className="text-[10px] shrink-0 ml-2">
-                      {c.status === "open" ? "Aberto" : "Fechado"}
+                      {c.status === "open" ? "Aberto" : "Resolvido"}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
@@ -227,6 +287,14 @@ export default function AdminSupport() {
               )}
             </button>
           ))}
+          {filteredConversations.length === 0 && (
+            <div className="flex flex-col items-center justify-center p-8 text-center gap-2">
+              <Filter className="h-8 w-8 text-muted-foreground/30" />
+              <p className="text-xs text-muted-foreground">
+                Nenhuma conversa {statusFilter === "open" ? "aberta" : "resolvida"}
+              </p>
+            </div>
+          )}
         </div>
       </Card>
 
@@ -239,16 +307,38 @@ export default function AdminSupport() {
           </div>
         ) : (
           <>
-            <div className="p-3 border-b border-border flex items-center gap-3">
-              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                <User className="h-4 w-4 text-primary" />
+            <div className="p-3 border-b border-border flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm text-foreground">
+                    {profiles[activeConvData?.user_id || ""] || "Usuário"}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">{activeConvData?.subject}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-sm text-foreground">
-                  {profiles[activeConvData?.user_id || ""] || "Usuário"}
-                </h3>
-                <p className="text-xs text-muted-foreground">{activeConvData?.subject}</p>
-              </div>
+              {activeConvData?.status === "open" ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResolve}
+                  className="gap-1.5 text-emerald-600 border-emerald-500/30 hover:bg-emerald-500/10"
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Resolvido
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReopen}
+                  className="gap-1.5"
+                >
+                  Reabrir
+                </Button>
+              )}
             </div>
             <div className="flex-1 overflow-auto p-4 space-y-4">
               {messages.map((m) => {
