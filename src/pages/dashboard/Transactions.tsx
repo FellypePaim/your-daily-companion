@@ -13,6 +13,7 @@ import { format, startOfMonth, endOfMonth, addMonths, subMonths, startOfWeek, en
 import { ptBR } from "date-fns/locale";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { EditTransactionDialog } from "@/components/EditTransactionDialog";
+import { ImportExtractDialog } from "@/components/ImportExtractDialog";
 import { useToast } from "@/hooks/use-toast";
 
 type Period = "today" | "week" | "month";
