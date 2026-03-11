@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useWallets } from "@/hooks/useSharedQueries";
 import { AddWalletDialog } from "@/components/AddWalletDialog";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { EditWalletDialog } from "@/components/EditWalletDialog";
@@ -31,15 +32,7 @@ export default function Wallets() {
   const [editWallet, setEditWallet] = useState<any>(null);
   const [editTx, setEditTx] = useState<any>(null);
 
-  const { data: wallets = [] } = useQuery({
-    queryKey: ["wallets", user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("wallets").select("*").order("created_at", { ascending: true });
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!user,
-  });
+  const { data: wallets = [] } = useWallets();
 
   const { data: transactions = [] } = useQuery({
     queryKey: ["wallet-transactions", user?.id],
@@ -72,8 +65,9 @@ export default function Wallets() {
   const monthEnd = new Date(selYear, selMonth + 1, 0);
   const dateRange = `${new Date(selYear, selMonth, 1).toLocaleDateString("pt-BR")} até ${monthEnd.toLocaleDateString("pt-BR")}`;
 
-  const monthIncome = transactions.filter((t) => t.type === "income" && t.date >= monthStart).reduce((sum, t) => sum + Number(t.amount), 0);
-  const monthExpense = transactions.filter((t) => t.type === "expense" && t.date >= monthStart).reduce((sum, t) => sum + Number(t.amount), 0);
+  const monthEndStr = monthEnd.toISOString().slice(0, 10);
+  const monthIncome = transactions.filter((t) => t.type === "income" && t.date >= monthStart && t.date <= monthEndStr).reduce((sum, t) => sum + Number(t.amount), 0);
+  const monthExpense = transactions.filter((t) => t.type === "expense" && t.date >= monthStart && t.date <= monthEndStr).reduce((sum, t) => sum + Number(t.amount), 0);
 
   const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 

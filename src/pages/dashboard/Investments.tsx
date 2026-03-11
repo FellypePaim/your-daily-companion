@@ -60,11 +60,11 @@ export default function Investments() {
     queryKey: ["investments", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("investments" as any)
+        .from("investments")
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data || []) as any[];
+      return data || [];
     },
     enabled: !!user,
   });
@@ -89,7 +89,7 @@ export default function Investments() {
   const returnPct = totalInvested > 0 ? (totalReturn / totalInvested) * 100 : 0;
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("investments" as any).delete().eq("id", id);
+    const { error } = await supabase.from("investments").delete().eq("id", id);
     if (error) {
       toast.error("Erro ao excluir", { description: error.message });
     } else {

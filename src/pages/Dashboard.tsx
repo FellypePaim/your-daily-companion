@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useWallets, useCategories } from "@/hooks/useSharedQueries";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -134,7 +135,7 @@ export default function Dashboard() {
   };
 
   const { data: transactions = [] } = useQuery({
-    queryKey: ["dashboard-transactions", user?.id, period],
+    queryKey: ["dashboard-transactions", user?.id, period, selectedMonth, selectedYear],
     queryFn: async () => {
       const { data } = await supabase
         .from("transactions")
@@ -146,23 +147,8 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
-  const { data: wallets = [] } = useQuery({
-    queryKey: ["wallets", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("wallets").select("*").order("created_at");
-      return data || [];
-    },
-    enabled: !!user,
-  });
-
-  const { data: categories = [] } = useQuery({
-    queryKey: ["categories", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("categories").select("*").order("name");
-      return data || [];
-    },
-    enabled: !!user,
-  });
+  const { data: wallets = [] } = useWallets();
+  const { data: categories = [] } = useCategories();
 
   const { data: goals = [] } = useQuery({
     queryKey: ["goals", user?.id],

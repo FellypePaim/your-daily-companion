@@ -310,7 +310,7 @@ export default function Reports() {
             <label className="text-[10px] md:text-xs font-medium text-muted-foreground mb-1 block">Ano</label>
             <Select value={year} onValueChange={setYear}>
               <SelectTrigger className="rounded-lg h-8 md:h-10 text-xs md:text-sm"><SelectValue /></SelectTrigger>
-              <SelectContent>{[2024, 2025, 2026].map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
+              <SelectContent>{Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <button
@@ -495,7 +495,7 @@ export default function Reports() {
                   </Select>
                   <Select value={compareYear} onValueChange={setCompareYear}>
                     <SelectTrigger className="rounded-lg w-24"><SelectValue /></SelectTrigger>
-                    <SelectContent>{[2024, 2025, 2026].map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
+                    <SelectContent>{Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
               </div>
