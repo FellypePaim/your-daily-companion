@@ -95,6 +95,15 @@ serve(async (req) => {
       if (profile?.cpf_cnpj) cpfCnpj = profile.cpf_cnpj;
     }
 
+    // Save CPF to profile if provided and not yet saved
+    if (cpfCnpj) {
+      await supabaseAdmin
+        .from("profiles")
+        .update({ cpf_cnpj: cpfCnpj })
+        .eq("id", user.id)
+        .is("cpf_cnpj", null);
+    }
+
     const asaasKey = Deno.env.get("ASAAS_API_KEY");
     if (!asaasKey) throw new Error("ASAAS_API_KEY não configurada");
 
