@@ -148,9 +148,11 @@ export default function Investments() {
         <h2 className="font-bold text-foreground mb-6">Seus Investimentos</h2>
         <div className="text-center py-12 text-muted-foreground">
           <p className="font-medium">Nenhum investimento cadastrado</p>
-          <Button className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5 mt-4">
-            Adicionar primeiro investimento
-          </Button>
+          <AddInvestmentDialog trigger={
+            <Button className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5 mt-4">
+              Adicionar primeiro investimento
+            </Button>
+          } />
         </div>
       </Card>
     </div>
