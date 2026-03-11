@@ -44,6 +44,7 @@ export function MobileBottomNav() {
   const [showMore, setShowMore] = useState(false);
   const { user } = useAuth();
   const { isAdmin } = useIsAdmin();
+  const { unreadCount: unreadSupport } = useUnreadSupport();
 
   const { data: reminderCount = 0 } = useQuery({
     queryKey: ["reminders-count", user?.id],
