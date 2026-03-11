@@ -24,6 +24,10 @@ export default function DashboardLayout() {
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
 
+  // Offline sync & realtime notifications
+  useOfflineSync();
+  useRealtimeNotifications();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background relative">
