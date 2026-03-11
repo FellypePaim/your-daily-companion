@@ -90,11 +90,24 @@ export default function Dashboard() {
   };
 
   const now = new Date();
-  const monthName = now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+  const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
+  const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+
+  const selectedDate = new Date(selectedYear, selectedMonth, 1);
+  const monthName = selectedDate.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
   const monthCapitalized = monthName.charAt(0).toUpperCase() + monthName.slice(1);
 
+  const handlePrevMonth = () => {
+    if (selectedMonth === 0) { setSelectedMonth(11); setSelectedYear(y => y - 1); }
+    else setSelectedMonth(m => m - 1);
+  };
+  const handleNextMonth = () => {
+    if (selectedMonth === 11) { setSelectedMonth(0); setSelectedYear(y => y + 1); }
+    else setSelectedMonth(m => m + 1);
+  };
+
   const getDateRange = () => {
-    const y = now.getFullYear(), m = now.getMonth();
+    const y = selectedYear, m = selectedMonth;
     if (period === "today") return now.toLocaleDateString("pt-BR");
     if (period === "week") {
       const start = new Date(now); start.setDate(now.getDate() - now.getDay());
@@ -109,7 +122,7 @@ export default function Dashboard() {
   };
 
   const getStartDate = () => {
-    const y = now.getFullYear(), m = now.getMonth();
+    const y = selectedYear, m = selectedMonth;
     if (period === "today") return now.toISOString().slice(0, 10);
     if (period === "week") {
       const start = new Date(now); start.setDate(now.getDate() - now.getDay());
