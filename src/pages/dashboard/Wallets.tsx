@@ -32,15 +32,7 @@ export default function Wallets() {
   const [editWallet, setEditWallet] = useState<any>(null);
   const [editTx, setEditTx] = useState<any>(null);
 
-  const { data: wallets = [] } = useQuery({
-    queryKey: ["wallets", user?.id],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("wallets").select("*").order("created_at", { ascending: true });
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!user,
-  });
+  const { data: wallets = [] } = useWallets();
 
   const { data: transactions = [] } = useQuery({
     queryKey: ["wallet-transactions", user?.id],
