@@ -52,9 +52,6 @@ export default function CheckoutDialog({
   const [cardPostalCode, setCardPostalCode] = useState("");
   const [cardAddressNumber, setCardAddressNumber] = useState("");
 
-  // CPF for PIX/Boleto
-  const [cpfCnpj, setCpfCnpj] = useState("");
-
   // Payment tracking
   const [paymentId, setPaymentId] = useState<string | null>(null);
 
@@ -106,12 +103,9 @@ export default function CheckoutDialog({
     setErrorMsg("");
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { plan, billingType: "PIX", cpfCnpj: cpfCnpj.replace(/\D/g, "") || undefined },
+        body: { plan, billingType: "PIX" },
       });
-      if (error) {
-        const errBody = typeof error === "object" && error.message ? error.message : String(error);
-        throw new Error(errBody);
-      }
+      if (error) throw new Error(error.message);
       if (data?.error) throw new Error(data.error);
 
       setPixQrCode(data.pixQrCode || "");
@@ -129,12 +123,9 @@ export default function CheckoutDialog({
     setErrorMsg("");
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { plan, billingType: "BOLETO", cpfCnpj: cpfCnpj.replace(/\D/g, "") || undefined },
+        body: { plan, billingType: "BOLETO" },
       });
-      if (error) {
-        const errBody = typeof error === "object" && error.message ? error.message : String(error);
-        throw new Error(errBody);
-      }
+      if (error) throw new Error(error.message);
       if (data?.error) throw new Error(data.error);
 
       setBoletoBarCode(data.boletoBarCode || "");
@@ -268,20 +259,9 @@ export default function CheckoutDialog({
             {/* PIX Tab */}
             <TabsContent value="pix" className="mt-4 space-y-4">
               {status === "idle" && (
-                <div className="space-y-3">
-                  <div>
-                    <Label className="text-xs">CPF/CNPJ *</Label>
-                    <Input
-                      placeholder="000.000.000-00"
-                      value={cpfCnpj}
-                      onChange={(e) => setCpfCnpj(e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <Button onClick={handlePixCheckout} className="w-full">
-                    <QrCode className="h-4 w-4 mr-2" /> Gerar QR Code PIX
-                  </Button>
-                </div>
+                <Button onClick={handlePixCheckout} className="w-full">
+                  <QrCode className="h-4 w-4 mr-2" /> Gerar QR Code PIX
+                </Button>
               )}
               {status === "loading" && (
                 <div className="flex items-center justify-center py-8">
@@ -328,20 +308,9 @@ export default function CheckoutDialog({
             {/* Boleto Tab */}
             <TabsContent value="boleto" className="mt-4 space-y-4">
               {status === "idle" && (
-                <div className="space-y-3">
-                  <div>
-                    <Label className="text-xs">CPF/CNPJ *</Label>
-                    <Input
-                      placeholder="000.000.000-00"
-                      value={cpfCnpj}
-                      onChange={(e) => setCpfCnpj(e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <Button onClick={handleBoletoCheckout} className="w-full">
-                    <FileText className="h-4 w-4 mr-2" /> Gerar Boleto
-                  </Button>
-                </div>
+                <Button onClick={handleBoletoCheckout} className="w-full">
+                  <FileText className="h-4 w-4 mr-2" /> Gerar Boleto
+                </Button>
               )}
               {status === "loading" && (
                 <div className="flex items-center justify-center py-8">
