@@ -52,11 +52,24 @@ export default function Wallets() {
 
   const totalBalance = wallets.reduce((sum, w) => sum + Number(w.balance), 0);
   const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
-  const monthName = now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+  const [selMonth, setSelMonth] = useState(now.getMonth());
+  const [selYear, setSelYear] = useState(now.getFullYear());
+
+  const handlePrevMonth = () => {
+    if (selMonth === 0) { setSelMonth(11); setSelYear(y => y - 1); }
+    else setSelMonth(m => m - 1);
+  };
+  const handleNextMonth = () => {
+    if (selMonth === 11) { setSelMonth(0); setSelYear(y => y + 1); }
+    else setSelMonth(m => m + 1);
+  };
+
+  const monthStart = new Date(selYear, selMonth, 1).toISOString().slice(0, 10);
+  const selDate = new Date(selYear, selMonth, 1);
+  const monthName = selDate.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
   const monthCapitalized = monthName.charAt(0).toUpperCase() + monthName.slice(1);
-  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  const dateRange = `${new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString("pt-BR")} até ${monthEnd.toLocaleDateString("pt-BR")}`;
+  const monthEnd = new Date(selYear, selMonth + 1, 0);
+  const dateRange = `${new Date(selYear, selMonth, 1).toLocaleDateString("pt-BR")} até ${monthEnd.toLocaleDateString("pt-BR")}`;
 
   const monthIncome = transactions.filter((t) => t.type === "income" && t.date >= monthStart).reduce((sum, t) => sum + Number(t.amount), 0);
   const monthExpense = transactions.filter((t) => t.type === "expense" && t.date >= monthStart).reduce((sum, t) => sum + Number(t.amount), 0);
@@ -210,7 +223,7 @@ export default function Wallets() {
           <Card>
             <CardContent className="p-3 md:p-4">
               <div className="flex items-center justify-between">
-                <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10 h-8 w-8"><ChevronLeft className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10 h-8 w-8" onClick={handlePrevMonth}><ChevronLeft className="h-4 w-4" /></Button>
                 <div className="text-center">
                   <p className="font-semibold text-foreground text-sm md:text-base">{monthCapitalized}</p>
                   <div className="flex items-center gap-1.5 mt-1.5 justify-center">
@@ -220,7 +233,7 @@ export default function Wallets() {
                   </div>
                   <p className="text-[10px] md:text-xs text-muted-foreground mt-1">{dateRange}</p>
                 </div>
-                <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10 h-8 w-8"><ChevronRight className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10 h-8 w-8" onClick={handleNextMonth}><ChevronRight className="h-4 w-4" /></Button>
               </div>
             </CardContent>
           </Card>

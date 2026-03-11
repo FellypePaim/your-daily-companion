@@ -90,11 +90,24 @@ export default function Dashboard() {
   };
 
   const now = new Date();
-  const monthName = now.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+  const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
+  const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+
+  const selectedDate = new Date(selectedYear, selectedMonth, 1);
+  const monthName = selectedDate.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
   const monthCapitalized = monthName.charAt(0).toUpperCase() + monthName.slice(1);
 
+  const handlePrevMonth = () => {
+    if (selectedMonth === 0) { setSelectedMonth(11); setSelectedYear(y => y - 1); }
+    else setSelectedMonth(m => m - 1);
+  };
+  const handleNextMonth = () => {
+    if (selectedMonth === 11) { setSelectedMonth(0); setSelectedYear(y => y + 1); }
+    else setSelectedMonth(m => m + 1);
+  };
+
   const getDateRange = () => {
-    const y = now.getFullYear(), m = now.getMonth();
+    const y = selectedYear, m = selectedMonth;
     if (period === "today") return now.toLocaleDateString("pt-BR");
     if (period === "week") {
       const start = new Date(now); start.setDate(now.getDate() - now.getDay());
@@ -109,7 +122,7 @@ export default function Dashboard() {
   };
 
   const getStartDate = () => {
-    const y = now.getFullYear(), m = now.getMonth();
+    const y = selectedYear, m = selectedMonth;
     if (period === "today") return now.toISOString().slice(0, 10);
     if (period === "week") {
       const start = new Date(now); start.setDate(now.getDate() - now.getDay());
@@ -299,7 +312,7 @@ export default function Dashboard() {
       <Card>
         <CardContent className="p-3 md:p-4">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10"><ChevronLeft className="h-5 w-5" /></Button>
+            <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10" onClick={handlePrevMonth}><ChevronLeft className="h-5 w-5" /></Button>
             <div className="text-center">
               <p className="font-semibold text-foreground">{monthCapitalized}</p>
               <div className="flex items-center gap-2 mt-2 justify-center">
@@ -311,7 +324,7 @@ export default function Dashboard() {
               </div>
               <p className="text-xs text-muted-foreground mt-1.5">{getDateRange()}</p>
             </div>
-            <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10"><ChevronRight className="h-5 w-5" /></Button>
+            <Button variant="ghost" size="icon" className="rounded-full text-primary hover:bg-primary/10" onClick={handleNextMonth}><ChevronRight className="h-5 w-5" /></Button>
           </div>
         </CardContent>
       </Card>

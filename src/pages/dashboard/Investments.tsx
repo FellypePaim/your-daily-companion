@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, TrendingUp, DollarSign, BarChart3, RefreshCw, Bitcoin, Landmark, BarChart2, Receipt } from "lucide-react";
+import { AddInvestmentDialog } from "@/components/AddInvestmentDialog";
 
 interface MarketItem {
   label: string;
@@ -66,10 +67,7 @@ export default function Investments() {
           </div>
           <p className="text-muted-foreground text-sm">Acompanhe seu patrimônio e o mercado em tempo real</p>
         </div>
-        <Button className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5">
-          <Plus className="h-4 w-4" />
-          Novo Investimento
-        </Button>
+        <AddInvestmentDialog />
       </div>
 
       {/* Market Ticker */}
@@ -150,9 +148,11 @@ export default function Investments() {
         <h2 className="font-bold text-foreground mb-6">Seus Investimentos</h2>
         <div className="text-center py-12 text-muted-foreground">
           <p className="font-medium">Nenhum investimento cadastrado</p>
-          <Button className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5 mt-4">
-            Adicionar primeiro investimento
-          </Button>
+          <AddInvestmentDialog trigger={
+            <Button className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5 mt-4">
+              Adicionar primeiro investimento
+            </Button>
+          } />
         </div>
       </Card>
     </div>
