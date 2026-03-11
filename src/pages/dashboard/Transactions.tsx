@@ -50,8 +50,8 @@ export default function Transactions() {
   const PAGE_SIZE = 50;
   const [page, setPage] = useState(0);
 
-  const { data: transactions = [] } = useQuery({
-    queryKey: ["day-transactions", user?.id, range.start, range.end],
+  const { data: transactions = [], isLoading: loadingTx } = useQuery({
+    queryKey: ["day-transactions", user?.id, range.start, range.end, page],
     queryFn: async () => {
       const { data } = await supabase
         .from("transactions")
@@ -59,7 +59,8 @@ export default function Transactions() {
         .is("recurring_id", null)
         .gte("date", range.start)
         .lte("date", range.end)
-        .order("date", { ascending: false });
+        .order("date", { ascending: false })
+        .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
       return data || [];
     },
     enabled: !!user,
