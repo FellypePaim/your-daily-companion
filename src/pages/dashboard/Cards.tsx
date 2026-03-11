@@ -28,7 +28,7 @@ export default function Cards() {
   const [payCard, setPayCard] = useState<{ id: string; name: string; bill: number } | null>(null);
   const [deleteCardId, setDeleteCardId] = useState<string | null>(null);
 
-  const { data: cards = [] } = useQuery({
+  const { data: cards = [], isLoading: loadingCards } = useQuery({
     queryKey: ["cards", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -41,6 +41,18 @@ export default function Cards() {
     },
     enabled: !!user,
   });
+
+  const handleDeleteCard = async () => {
+    if (!deleteCardId) return;
+    const { error } = await supabase.from("cards").delete().eq("id", deleteCardId);
+    if (error) {
+      toast.error("Erro ao excluir cartão", { description: error.message });
+    } else {
+      toast.success("Cartão removido");
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+    }
+    setDeleteCardId(null);
+  };
 
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
