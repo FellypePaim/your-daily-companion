@@ -60,11 +60,11 @@ export default function Investments() {
     queryKey: ["investments", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("investments" as any)
+        .from("investments")
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data || []) as any[];
+      return data || [];
     },
     enabled: !!user,
   });
