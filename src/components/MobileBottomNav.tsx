@@ -36,7 +36,7 @@ const moreItems = [
 ];
 
 const adminItems = [
-  { to: "/dashboard/admin/support", icon: HeadphonesIcon, label: "Atendimentos" },
+  { to: "/dashboard/admin/support", icon: HeadphonesIcon, label: "Atendimentos", supportBadge: true },
   { to: "/dashboard/admin/users", icon: Users, label: "Usuários" },
 ];
 
