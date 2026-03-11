@@ -200,6 +200,7 @@ export default function Categories() {
           </div>
         )}
       </div>
+      )}
 
       <EditCategoryDialog category={editCategory} open={!!editCategory || showNew} onOpenChange={(o) => { if (!o) { setEditCategory(null); setShowNew(false); } }} />
     </div>
