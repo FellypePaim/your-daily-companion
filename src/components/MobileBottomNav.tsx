@@ -31,7 +31,7 @@ const moreItems = [
   { to: "/dashboard/gamification", icon: Trophy, label: "Gamificação" },
   { to: "/dashboard/behavior", icon: Brain, label: "Comportamento" },
   { to: "/dashboard/reports", icon: FileText, label: "Relatórios" },
-  { to: "/dashboard/chat", icon: HeadphonesIcon, label: "Suporte" },
+  { to: "/dashboard/chat", icon: HeadphonesIcon, label: "Suporte", supportBadge: true },
   { to: "/dashboard/settings", icon: Settings, label: "Configurações" },
 ];
 
