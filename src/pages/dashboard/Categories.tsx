@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Plus, Target, Pencil, UtensilsCrossed, ShoppingCart, GraduationCap, Gamepad2, Home, Package, DollarSign, Heart, Car, BookOpen, Shirt, MoreHorizontal, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { EditCategoryDialog } from "@/components/EditCategoryDialog";
+import { CategorySkeleton } from "@/components/ui/skeletons";
 
 const iconMap: Record<string, React.ElementType> = {
   utensils: UtensilsCrossed, shopping: ShoppingCart, education: GraduationCap, gamepad: Gamepad2,
