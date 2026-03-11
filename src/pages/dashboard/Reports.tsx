@@ -123,74 +123,78 @@ export default function Reports() {
     URL.revokeObjectURL(url);
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     if (transactions.length === 0) return;
     const totalExp = transactions.filter(t => t.type === "expense").reduce((s, t) => s + Number(t.amount), 0);
     const totalInc = transactions.filter(t => t.type === "income").reduce((s, t) => s + Number(t.amount), 0);
 
-    const lines = [
-      `RELATÓRIO FINANCEIRO — ${months[Number(month)]} ${year}`,
-      `Brave Assessor`,
-      ``,
-      `RESUMO`,
-      `Receitas: ${fmt(totalInc)}`,
-      `Despesas: ${fmt(totalExp)}`,
-      `Saldo: ${fmt(totalInc - totalExp)}`,
-      ``,
-      `TRANSAÇÕES`,
-      `${"Data".padEnd(12)}${"Descrição".padEnd(30)}${"Categoria".padEnd(20)}${"Tipo".padEnd(10)}Valor`,
-      "-".repeat(90),
-    ];
-    transactions.forEach((t: any) => {
-      lines.push(
-        `${t.date.padEnd(12)}${(t.description || "").substring(0, 28).padEnd(30)}${((t.categories?.name || "Sem cat.")).substring(0, 18).padEnd(20)}${(t.type === "income" ? "Receita" : "Despesa").padEnd(10)}${fmt(Number(t.amount))}`
-      );
-    });
-    lines.push("", "-".repeat(90), `Gerado em ${new Date().toLocaleString("pt-BR")}`);
+    const { default: jsPDF } = await import("jspdf");
+    const { default: autoTable } = await import("jspdf-autotable");
 
-    // Create a printable HTML window for PDF
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return;
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html><head><title>Relatório - ${months[Number(month)]} ${year}</title>
-      <style>
-        body { font-family: 'Courier New', monospace; font-size: 11px; padding: 40px; color: #222; }
-        h1 { font-size: 16px; margin-bottom: 4px; }
-        h2 { font-size: 12px; color: #666; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #ddd; font-size: 11px; }
-        th { background: #f5f5f5; font-weight: bold; }
-        .income { color: #059669; }
-        .expense { color: #dc2626; }
-        .summary { display: flex; gap: 40px; margin: 16px 0; }
-        .summary div { background: #f9f9f9; padding: 12px 20px; border-radius: 8px; }
-        @media print { body { padding: 20px; } }
-      </style></head><body>
-      <h1>Relatório Financeiro — ${months[Number(month)]} ${year}</h1>
-      <h2>Brave Assessor</h2>
-      <div class="summary">
-        <div>Receitas: <strong class="income">${fmt(totalInc)}</strong></div>
-        <div>Despesas: <strong class="expense">${fmt(totalExp)}</strong></div>
-        <div>Saldo: <strong>${fmt(totalInc - totalExp)}</strong></div>
-      </div>
-      <table>
-        <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Tipo</th><th>Valor</th></tr></thead>
-        <tbody>
-          ${transactions.map((t: any) => `<tr>
-            <td>${new Date(t.date).toLocaleDateString("pt-BR")}</td>
-            <td>${t.description || ""}</td>
-            <td>${t.categories?.name || "Sem categoria"}</td>
-            <td class="${t.type}">${t.type === "income" ? "Receita" : "Despesa"}</td>
-            <td class="${t.type}">${fmt(Number(t.amount))}</td>
-          </tr>`).join("")}
-        </tbody>
-      </table>
-      <p style="margin-top:20px;color:#999;font-size:10px;">Gerado em ${new Date().toLocaleString("pt-BR")}</p>
-      </body></html>
-    `);
-    printWindow.document.close();
-    setTimeout(() => printWindow.print(), 500);
+    const doc = new jsPDF();
+
+    // Header
+    doc.setFontSize(18);
+    doc.setTextColor(224, 48, 32);
+    doc.text("Brave Assessor", 14, 20);
+    doc.setFontSize(14);
+    doc.setTextColor(40, 40, 40);
+    doc.text(`Relatório — ${months[Number(month)]} ${year}`, 14, 30);
+
+    // Summary boxes
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Receitas", 14, 45);
+    doc.setTextColor(5, 150, 105);
+    doc.setFontSize(14);
+    doc.text(fmt(totalInc), 14, 52);
+
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Despesas", 80, 45);
+    doc.setTextColor(220, 38, 38);
+    doc.setFontSize(14);
+    doc.text(fmt(totalExp), 80, 52);
+
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Saldo", 146, 45);
+    doc.setTextColor(totalInc - totalExp >= 0 ? 5 : 220, totalInc - totalExp >= 0 ? 150 : 38, totalInc - totalExp >= 0 ? 105 : 38);
+    doc.setFontSize(14);
+    doc.text(fmt(totalInc - totalExp), 146, 52);
+
+    // Table
+    const tableData = transactions.map((t: any) => [
+      new Date(t.date).toLocaleDateString("pt-BR"),
+      (t.description || "").substring(0, 35),
+      t.categories?.name || "Sem categoria",
+      t.type === "income" ? "Receita" : "Despesa",
+      fmt(Number(t.amount)),
+    ]);
+
+    autoTable(doc, {
+      startY: 60,
+      head: [["Data", "Descrição", "Categoria", "Tipo", "Valor"]],
+      body: tableData,
+      styles: { fontSize: 9, cellPadding: 3 },
+      headStyles: { fillColor: [224, 48, 32], textColor: 255, fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [248, 248, 248] },
+      columnStyles: {
+        4: { halign: "right" },
+      },
+    });
+
+    // Footer
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(150, 150, 150);
+      doc.text(`Gerado em ${new Date().toLocaleString("pt-BR")} — Brave Assessor`, 14, doc.internal.pageSize.height - 10);
+      doc.text(`Página ${i}/${pageCount}`, doc.internal.pageSize.width - 30, doc.internal.pageSize.height - 10);
+    }
+
+    doc.save(`relatorio-${months[Number(month)]}-${year}.pdf`);
   };
 
   const startDate = `${year}-${String(Number(month) + 1).padStart(2, "0")}-01`;
