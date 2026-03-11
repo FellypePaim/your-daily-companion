@@ -78,6 +78,7 @@ export function AppSidebar() {
     { title: "Gamificação", url: "/dashboard/gamification", icon: Trophy, badge: 0 },
     { title: "Comportamento", url: "/dashboard/behavior", icon: Brain, badge: 0 },
     { title: "Relatórios", url: "/dashboard/reports", icon: FileText, badge: 0 },
+    { title: "Calendário", url: "/dashboard/calendar", icon: CalendarDays, badge: 0 },
     { title: "Suporte", url: "/dashboard/chat", icon: HeadphonesIcon, badge: unreadSupport },
     { title: "Configurações", url: "/dashboard/settings", icon: Settings, badge: 0 },
   ];
