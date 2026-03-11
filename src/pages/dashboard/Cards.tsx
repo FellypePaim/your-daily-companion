@@ -133,7 +133,11 @@ export default function Cards() {
         </Card>
       )}
 
-      {cards.length === 0 ? (
+      {loadingCards ? (
+        <div className="space-y-4 md:space-y-6">
+          {[1, 2].map(i => <CardSkeleton key={i} />)}
+        </div>
+      ) : cards.length === 0 ? (
         <Card className="p-4 md:p-6">
           <div className="text-center py-8 md:py-12 text-muted-foreground">
             <CreditCard className="h-10 w-10 md:h-12 md:w-12 mx-auto mb-3 opacity-40" />

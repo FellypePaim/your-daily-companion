@@ -194,7 +194,11 @@ export default function Investments() {
       {/* Investments List */}
       <Card className="p-6">
         <h2 className="font-bold text-foreground mb-6">Seus Investimentos</h2>
-        {investments.length === 0 ? (
+        {loadingInv ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map(i => <InvestmentSkeleton key={i} />)}
+          </div>
+        ) : investments.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <p className="font-medium">Nenhum investimento cadastrado</p>
             <AddInvestmentDialog trigger={
@@ -224,7 +228,7 @@ export default function Investments() {
                       </p>
                     </div>
                     <button
-                      onClick={() => handleDelete(inv.id)}
+                      onClick={() => setDeleteId(inv.id)}
                       className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-1"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -236,6 +240,14 @@ export default function Investments() {
           </div>
         )}
       </Card>
+
+      <ConfirmDeleteDialog
+        open={!!deleteId}
+        onOpenChange={(o) => !o && setDeleteId(null)}
+        onConfirm={handleDelete}
+        title="Excluir investimento?"
+        description="O investimento será removido permanentemente."
+      />
     </div>
   );
 }
