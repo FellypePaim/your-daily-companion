@@ -313,6 +313,13 @@ export default function Cards() {
           onOpenChange={(o) => !o && setPayCard(null)}
         />
       )}
+      <ConfirmDeleteDialog
+        open={!!deleteCardId}
+        onOpenChange={(o) => !o && setDeleteCardId(null)}
+        onConfirm={handleDeleteCard}
+        title="Excluir cartão?"
+        description="O cartão e suas informações serão removidos. Transações existentes não serão afetadas."
+      />
     </div>
   );
 }
