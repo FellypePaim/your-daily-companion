@@ -262,6 +262,14 @@ export default function Cards() {
                         {transactions.length} transaç{transactions.length === 1 ? "ão" : "ões"}
                       </Button>
                     )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 md:h-10 rounded-xl text-muted-foreground hover:text-destructive"
+                      onClick={(e) => { e.stopPropagation(); setDeleteCardId(card.id); }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                    </Button>
                   </div>
 
                   {isExpanded && transactions.length > 0 && (
