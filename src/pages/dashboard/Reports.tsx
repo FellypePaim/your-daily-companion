@@ -515,8 +515,8 @@ export default function Reports() {
                   contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: 12 }}
                 />
                 <Legend />
-                <Bar dataKey="receitas" name="Receitas" fill="#10b981" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="despesas" name="Despesas" fill="#e11d48" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="receitas" name="Receitas" fill="hsl(160, 84%, 39%)" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="despesas" name="Despesas" fill="hsl(347, 77%, 50%)" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Card>
