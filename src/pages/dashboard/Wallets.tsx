@@ -14,6 +14,7 @@ import { AddWalletDialog } from "@/components/AddWalletDialog";
 import { AddTransactionDialog } from "@/components/AddTransactionDialog";
 import { EditWalletDialog } from "@/components/EditWalletDialog";
 import { EditTransactionDialog } from "@/components/EditTransactionDialog";
+import { TransferDialog } from "@/components/TransferDialog";
 
 type Tab = "overview" | "transactions" | "accounts";
 type Period = "today" | "week" | "month";
@@ -112,9 +113,12 @@ export default function Wallets() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-3 md:space-y-6">
-      <div>
-        <h1 className="text-lg md:text-3xl font-bold text-foreground">Carteira</h1>
-        <p className="text-xs md:text-sm text-muted-foreground mt-0.5">Gerencie seu dinheiro e transações</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg md:text-3xl font-bold text-foreground">Carteira</h1>
+          <p className="text-xs md:text-sm text-muted-foreground mt-0.5">Gerencie seu dinheiro e transações</p>
+        </div>
+        <TransferDialog />
       </div>
 
       {/* Tabs */}

@@ -283,6 +283,45 @@ export type Database = {
         }
         Relationships: []
       }
+      investments: {
+        Row: {
+          created_at: string | null
+          current_amount: number
+          id: string
+          invested_amount: number
+          name: string
+          notes: string | null
+          purchase_date: string
+          type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_amount?: number
+          id?: string
+          invested_amount?: number
+          name: string
+          notes?: string | null
+          purchase_date?: string
+          type?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_amount?: number
+          id?: string
+          invested_amount?: number
+          name?: string
+          notes?: string | null
+          purchase_date?: string
+          type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
