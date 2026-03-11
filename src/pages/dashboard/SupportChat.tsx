@@ -4,11 +4,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Send, Plus, MessageCircle, ImageIcon, X, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useUnreadSupport } from "@/hooks/useUnreadSupport";
 
 interface Conversation {
   id: string;
@@ -30,6 +32,7 @@ export default function SupportChat() {
   const { user } = useAuth();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { refresh: refreshUnread } = useUnreadSupport();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConv, setActiveConv] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -42,7 +45,6 @@ export default function SupportChat() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // On mobile, show chat view when a conversation is active
   const showChatView = isMobile ? !!activeConv : true;
   const showListView = isMobile ? !activeConv : true;
 
@@ -68,6 +70,8 @@ export default function SupportChat() {
   useEffect(() => {
     if (!activeConv) { setMessages([]); return; }
     setUnreadConvs((prev) => { const n = new Set(prev); n.delete(activeConv); return n; });
+    // Refresh sidebar/nav unread badge
+    refreshUnread();
 
     const fetchMessages = async () => {
       const { data } = await supabase
@@ -192,7 +196,12 @@ export default function SupportChat() {
                 onClick={() => setActiveConv(c.id)}
                 className={`w-full text-left px-4 py-3 border-b border-border hover:bg-muted/50 transition-colors relative ${activeConv === c.id ? "bg-accent" : ""}`}
               >
-                <p className="text-sm font-medium text-foreground truncate">{c.subject}</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-foreground truncate">{c.subject}</p>
+                  {c.status === "closed" && (
+                    <Badge variant="secondary" className="text-[10px] shrink-0 ml-2">Resolvido</Badge>
+                  )}
+                </div>
                 <p className="text-xs text-muted-foreground">{format(new Date(c.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}</p>
                 {unreadConvs.has(c.id) && (
                   <span className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
@@ -222,7 +231,7 @@ export default function SupportChat() {
                     <ArrowLeft className="h-4 w-4" />
                   </Button>
                 )}
-                <h3 className="font-semibold text-sm text-foreground">Suporte Nox</h3>
+                <h3 className="font-semibold text-sm text-foreground">Suporte Brave</h3>
               </div>
               <div className="flex-1 overflow-auto p-4 space-y-4">
                 {messages.map((m) => {
