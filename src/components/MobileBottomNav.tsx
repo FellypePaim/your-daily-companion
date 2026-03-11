@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useUnreadSupport } from "@/hooks/useUnreadSupport";
 
 const tabs = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Início", end: true },
