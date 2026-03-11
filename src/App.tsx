@@ -105,6 +105,7 @@ const App = () => (
                   <Route path="brave-ia" element={<NyloChat />} />
                   <Route path="reminders" element={<Reminders />} />
                   <Route path="gamification" element={<Gamification />} />
+                  <Route path="calendar" element={<FinancialCalendar />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
