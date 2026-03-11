@@ -54,7 +54,7 @@ export function AddTransactionDialog({ trigger }: Props) {
   const { data: cards = [] } = useQuery({
     queryKey: ["cards", user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("cards").select("id, name, brand, credit_limit, color").eq("user_id", user!.id).order("name");
+      const { data } = await supabase.from("cards").select("id, name, brand, credit_limit, color, due_day").eq("user_id", user!.id).order("name");
       return data || [];
     },
     enabled: !!user && open,
@@ -94,6 +94,9 @@ export function AddTransactionDialog({ trigger }: Props) {
     const numInstallments = payMethod === "card" && installments > 1 ? installments : 1;
     const installmentAmount = Math.round((parsedAmount / numInstallments) * 100) / 100;
 
+    // Get card's due_day for setting proper due dates on each installment
+    const cardDueDay = selectedCard?.due_day || null;
+
     const transactionsToInsert = [];
     for (let i = 0; i < numInstallments; i++) {
       const installmentDate = new Date(date);
@@ -101,6 +104,20 @@ export function AddTransactionDialog({ trigger }: Props) {
       const installmentDesc = numInstallments > 1
         ? `${desc} (${i + 1}/${numInstallments})`
         : desc;
+
+      // Calculate due_date: use card's due_day for each installment month
+      let dueDate: string | null = null;
+      if (effectivePayMethod === "card" && cardDueDay) {
+        const dueMonth = new Date(date);
+        // If purchase day > card due day, bill goes to next month
+        const purchaseDay = new Date(date).getDate();
+        const monthOffset = purchaseDay > cardDueDay ? i + 1 : i;
+        dueMonth.setMonth(dueMonth.getMonth() + monthOffset);
+        dueMonth.setDate(Math.min(cardDueDay, new Date(dueMonth.getFullYear(), dueMonth.getMonth() + 1, 0).getDate()));
+        dueDate = dueMonth.toISOString().slice(0, 10);
+      } else if (isRecurring) {
+        dueDate = date;
+      }
 
       transactionsToInsert.push({
         user_id: user.id,
@@ -111,7 +128,7 @@ export function AddTransactionDialog({ trigger }: Props) {
         wallet_id: effectivePayMethod === "wallet" ? (effectiveWalletId || null) : null,
         card_id: effectivePayMethod === "card" ? (cardId || null) : null,
         date: installmentDate.toISOString().slice(0, 10),
-        due_date: isRecurring ? date : null,
+        due_date: dueDate,
         is_paid: !isRecurring && i === 0 && effectivePayMethod === "wallet",
         recurring_id: recurringId,
       });

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  LayoutDashboard, Wallet, CalendarCheck, Sparkles, MoreHorizontal,
+  LayoutDashboard, Wallet, CalendarCheck, Sparkles, MoreHorizontal, CalendarDays,
   CreditCard, Tag, Target, TrendingUp, Brain, FileText,
   HeadphonesIcon, Settings, X, Users, Bell, ShieldCheck, ArrowLeftRight, Trophy,
 } from "lucide-react";
@@ -31,6 +31,7 @@ const moreItems = [
   { to: "/dashboard/gamification", icon: Trophy, label: "Gamificação" },
   { to: "/dashboard/behavior", icon: Brain, label: "Comportamento" },
   { to: "/dashboard/reports", icon: FileText, label: "Relatórios" },
+  { to: "/dashboard/calendar", icon: CalendarDays, label: "Calendário" },
   { to: "/dashboard/chat", icon: HeadphonesIcon, label: "Suporte", supportBadge: true },
   { to: "/dashboard/settings", icon: Settings, label: "Configurações" },
 ];

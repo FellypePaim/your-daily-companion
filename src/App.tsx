@@ -31,6 +31,7 @@ import Settings from "./pages/dashboard/Settings";
 import NyloChat from "./pages/dashboard/NyloChat";
 import Reminders from "./pages/dashboard/Reminders";
 import Gamification from "./pages/dashboard/Gamification";
+import FinancialCalendar from "./pages/dashboard/Calendar";
 import NotFound from "./pages/NotFound";
 import Install from "./pages/Install";
 import { PWASplashScreen } from "./components/PWASplashScreen";
@@ -104,6 +105,7 @@ const App = () => (
                   <Route path="brave-ia" element={<NyloChat />} />
                   <Route path="reminders" element={<Reminders />} />
                   <Route path="gamification" element={<Gamification />} />
+                  <Route path="calendar" element={<FinancialCalendar />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />

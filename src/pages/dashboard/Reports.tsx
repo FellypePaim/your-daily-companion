@@ -9,8 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, Cell } from "recharts";
 import {
   Calendar, FileText, BarChart3, TrendingUp, TrendingDown,
-  PieChart, ArrowUpDown, Send, FileSpreadsheet, DollarSign, Tag,
+  PieChart, ArrowUpDown, Send, FileSpreadsheet, DollarSign, Tag, Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const months = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -28,7 +29,79 @@ export default function Reports() {
   const [compareMonth, setCompareMonth] = useState(String(new Date().getMonth() === 0 ? 11 : new Date().getMonth() - 1));
   const [compareYear, setCompareYear] = useState(String(new Date().getMonth() === 0 ? new Date().getFullYear() - 1 : new Date().getFullYear()));
   const [sendWhatsApp, setSendWhatsApp] = useState(false);
+  const [sendingWhatsApp, setSendingWhatsApp] = useState(false);
   const [activeView, setActiveView] = useState<"categoria" | "fluxo" | "comparativo">("categoria");
+
+  // WhatsApp link check
+  const { data: whatsappLink } = useQuery({
+    queryKey: ["whatsapp-link-report", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("whatsapp_links")
+        .select("phone_number, verified")
+        .eq("user_id", user!.id)
+        .eq("verified", true)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const handleSendWhatsAppReport = async () => {
+    if (!whatsappLink?.phone_number) {
+      toast.error("WhatsApp não conectado", {
+        description: "Conecte seu WhatsApp nas configurações para enviar relatórios.",
+      });
+      setSendWhatsApp(false);
+      return;
+    }
+    if (transactions.length === 0) {
+      toast.error("Nenhuma transação neste período");
+      return;
+    }
+
+    setSendingWhatsApp(true);
+    try {
+      // Build report text
+      const totalExp = transactions.filter(t => t.type === "expense").reduce((s, t) => s + Number(t.amount), 0);
+      const totalInc = transactions.filter(t => t.type === "income").reduce((s, t) => s + Number(t.amount), 0);
+      const saldo = totalInc - totalExp;
+
+      const catBreakdown = categoryData.slice(0, 5).map((c, i) => {
+        const pct = totalExp > 0 ? ((c.total / totalExp) * 100).toFixed(0) : "0";
+        return `  ${i + 1}. ${c.name}: ${fmt(c.total)} (${pct}%)`;
+      }).join("\n");
+
+      const message = [
+        `📊 *Relatório — ${months[Number(month)]} ${year}*`,
+        ``,
+        `📈 Receitas: *${fmt(totalInc)}*`,
+        `📉 Despesas: *${fmt(totalExp)}*`,
+        `💰 Saldo: *${fmt(saldo)}*`,
+        ``,
+        totalExp > 0 ? `🏷️ *Top categorias:*\n${catBreakdown}` : "",
+        ``,
+        `_Brave Assessor 🤖_`,
+      ].filter(Boolean).join("\n");
+
+      // Use Evolution API to send via whatsapp-webhook or direct
+      const { error } = await supabase.functions.invoke("evolution-api", {
+        body: {
+          action: "sendText",
+          phone: whatsappLink.phone_number,
+          message,
+        },
+      });
+
+      if (error) throw error;
+      toast.success("Relatório enviado por WhatsApp! 📱");
+    } catch (err: any) {
+      console.error("WhatsApp send error:", err);
+      toast.error("Erro ao enviar relatório", { description: err.message });
+    } finally {
+      setSendingWhatsApp(false);
+    }
+  };
 
   const handleExportCSV = () => {
     if (transactions.length === 0) return;
@@ -240,11 +313,26 @@ export default function Reports() {
               <SelectContent>{[2024, 2025, 2026].map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}</SelectContent>
             </Select>
           </div>
-          <div className="flex items-center gap-1.5 md:gap-2 border border-border rounded-lg px-2.5 md:px-3 py-1.5 md:py-2 text-xs md:text-sm text-muted-foreground">
-            <Send className="h-3.5 w-3.5 md:h-4 md:w-4" />
+          <button
+            onClick={() => {
+              const next = !sendWhatsApp;
+              setSendWhatsApp(next);
+              if (next) handleSendWhatsAppReport();
+            }}
+            disabled={sendingWhatsApp}
+            className={`flex items-center gap-1.5 md:gap-2 border rounded-lg px-2.5 md:px-3 py-1.5 md:py-2 text-xs md:text-sm transition-colors ${
+              sendWhatsApp
+                ? "border-emerald-500 bg-emerald-500/10 text-emerald-600"
+                : "border-border text-muted-foreground hover:border-emerald-500/50"
+            }`}
+          >
+            {sendingWhatsApp ? (
+              <Loader2 className="h-3.5 w-3.5 md:h-4 md:w-4 animate-spin" />
+            ) : (
+              <Send className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            )}
             <span className="whitespace-nowrap hidden sm:inline">WhatsApp</span>
-            <Switch checked={sendWhatsApp} onCheckedChange={setSendWhatsApp} />
-          </div>
+          </button>
         </div>
       </Card>
 
